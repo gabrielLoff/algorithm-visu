@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { createGrid, setWall, setGravel, setCell } from '../grid/gridModel';
-import { getCost } from '../grid/gridUtils';
+import { pathCost } from '../grid/gridUtils';
 import { getAlgorithm } from './index';
 import { astar } from './astar';
 import { dijkstra } from './dijkstra';
@@ -155,12 +155,6 @@ function makeGravelGrid(): GridModel {
   grid = setGravel(grid, { row: 2, col: 2 });
   grid = setGravel(grid, { row: 2, col: 3 });
   return { ...grid, start: { row: 2, col: 0 }, goal: { row: 2, col: 4 } };
-}
-
-function pathCost(path: NonNullable<AlgorithmStep['path']>, grid: GridModel): number {
-  return path
-    .slice(1)
-    .reduce((sum, p) => sum + getCost(grid.cells[p.row][p.col]), 0);
 }
 
 describe('weighted pathfinding with gravel', () => {
