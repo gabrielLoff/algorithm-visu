@@ -91,3 +91,17 @@ Every algorithm is a **generator function** `(grid: GridModel) => AlgorithmGener
 
 - Dark theme background: `#0f172a`, text: `#e5e7eb`
 - CSS Modules only — no global stylesheet approach outside of `index.css` (reset + body defaults)
+
+## Agent skills
+
+### Issue tracker
+
+Issues live on GitHub (`gabrielLoff/algorithm-visu`). See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Default five-canonical vocabulary: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context layout — one `CONTEXT.md` + `docs/adr/` at the repo root. See `docs/agents/domain.md`.
