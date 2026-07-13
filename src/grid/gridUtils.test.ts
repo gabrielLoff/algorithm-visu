@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { getNeighbors, getCost, manhattan, euclidean, cellKey, parseCellKey } from './gridUtils';
-import { createGrid } from './gridModel';
+import { getNeighbors, getCost, manhattan, euclidean, cellKey, parseCellKey, pathExists } from './gridUtils';
+import { createGrid, setWall } from './gridModel';
 
 function smallGrid() {
   return createGrid(5, 5);
@@ -163,5 +163,66 @@ describe('parseCellKey', () => {
   it('is the inverse of cellKey', () => {
     const original = { row: 12, col: 34 };
     expect(parseCellKey(cellKey(original))).toEqual(original);
+  });
+});
+
+describe('pathExists', () => {
+  it('returns true for an empty grid (no walls)', () => {
+    const grid = createGrid(5, 5);
+    expect(pathExists(grid)).toBe(true);
+  });
+
+  it('returns true when start and goal are the same cell', () => {
+    const grid = createGrid(3, 3);
+    grid.start = { row: 1, col: 1 };
+    grid.goal = { row: 1, col: 1 };
+    grid.cells[1][1] = 'start';
+    expect(pathExists(grid)).toBe(true);
+  });
+
+  it('returns false when start is blocked by walls', () => {
+    let grid = createGrid(3, 3);
+    grid = setWall(grid, { row: 0, col: 0 });
+    grid = setWall(grid, { row: 2, col: 0 });
+    grid = setWall(grid, { row: 1, col: 1 });
+    grid = setWall(grid, { row: 0, col: 1 });
+    grid = setWall(grid, { row: 2, col: 1 });
+    expect(pathExists(grid)).toBe(false);
+  });
+
+  it('returns false when goal is blocked by walls', () => {
+    let grid = createGrid(3, 3);
+    grid = setWall(grid, { row: 0, col: 2 });
+    grid = setWall(grid, { row: 2, col: 2 });
+    grid = setWall(grid, { row: 1, col: 1 });
+    grid = setWall(grid, { row: 0, col: 1 });
+    grid = setWall(grid, { row: 2, col: 1 });
+    expect(pathExists(grid)).toBe(false);
+  });
+
+  it('returns false when start is null', () => {
+    const grid = createGrid(3, 3);
+    grid.start = null;
+    expect(pathExists(grid)).toBe(false);
+  });
+
+  it('returns false when goal is null', () => {
+    const grid = createGrid(3, 3);
+    grid.goal = null;
+    expect(pathExists(grid)).toBe(false);
+  });
+
+  it('navigates around walls through open paths', () => {
+    let grid = createGrid(5, 5);
+    grid = setWall(grid, { row: 1, col: 2 });
+    grid = setWall(grid, { row: 2, col: 2 });
+    grid = setWall(grid, { row: 3, col: 2 });
+    expect(pathExists(grid)).toBe(true);
+  });
+
+  it('finds path through gravel cells', () => {
+    const grid = createGrid(3, 3);
+    grid.cells[1][1] = 'gravel';
+    expect(pathExists(grid)).toBe(true);
   });
 });
