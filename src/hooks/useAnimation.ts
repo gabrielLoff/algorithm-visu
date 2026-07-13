@@ -1,16 +1,20 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { AlgorithmFn, AlgorithmStep, GridModel } from '../types';
 
+const MIN_DELAY_MS = 10;
+const MAX_DELAY_MS = 200;
+const SPEED_SCALE = 1.9;
+
 export function useAnimation(grid: GridModel) {
   const [steps, setSteps] = useState<AlgorithmStep[]>([]);
   const [currentStepIndex, setCurrentStepIndex] = useState(-1);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isDone, setIsDone] = useState(false);
-  const [speed, setSpeedState] = useState(50);
+  const [speed, setSpeed] = useState(50);
   const [algorithmName, setAlgorithmName] = useState<string | null>(null);
   const intervalRef = useRef<number | null>(null);
 
-  const clearInterval_ = useCallback(() => {
+  const stopTimer = useCallback(() => {
     if (intervalRef.current !== null) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
@@ -19,7 +23,7 @@ export function useAnimation(grid: GridModel) {
 
   const run = useCallback(
     (algorithmFn: AlgorithmFn, name: string) => {
-      clearInterval_();
+      stopTimer();
       setAlgorithmName(name);
 
       const collected: AlgorithmStep[] = [];
@@ -34,7 +38,7 @@ export function useAnimation(grid: GridModel) {
       setIsDone(false);
       setIsPlaying(false);
     },
-    [grid, clearInterval_]
+    [grid, stopTimer]
   );
 
   const play = useCallback(() => {
@@ -44,13 +48,13 @@ export function useAnimation(grid: GridModel) {
 
   const pause = useCallback(() => {
     setIsPlaying(false);
-    clearInterval_();
-  }, [clearInterval_]);
+    stopTimer();
+  }, [stopTimer]);
 
   useEffect(() => {
     if (isPlaying) {
-      clearInterval_();
-      const delay = Math.max(10, 200 - speed * 1.9);
+      stopTimer();
+      const delay = Math.max(MIN_DELAY_MS, MAX_DELAY_MS - speed * SPEED_SCALE);
       intervalRef.current = window.setInterval(() => {
         setCurrentStepIndex((prev) => {
           if (prev >= steps.length - 1) {
@@ -62,11 +66,11 @@ export function useAnimation(grid: GridModel) {
         });
       }, delay);
     } else {
-      clearInterval_();
+      stopTimer();
     }
 
-    return clearInterval_;
-  }, [isPlaying, speed, steps.length, clearInterval_]);
+    return stopTimer;
+  }, [isPlaying, speed, steps.length, stopTimer]);
 
   const stepForward = useCallback(() => {
     setCurrentStepIndex((prev) => {
@@ -86,10 +90,6 @@ export function useAnimation(grid: GridModel) {
     });
     setIsPlaying(false);
     setIsDone(false);
-  }, []);
-
-  const setSpeed = useCallback((s: number) => {
-    setSpeedState(s);
   }, []);
 
   const currentStep: AlgorithmStep | null =
