@@ -75,13 +75,14 @@ Every algorithm is a **generator function** `(grid: GridModel) => AlgorithmGener
 ## Rendering order matters
 
 `renderFrame` draws layers in this order (later layers paint on top):
-1. Grid background (walls)
-2. Grid lines
-3. Visited cells (cyan, 40% opacity)
-4. Frontier cells (yellow, 60% opacity)
-5. Current cell (purple)
-6. Path line (gold)
-7. Start/goal circles (green/red)
+1. Walls
+2. Gravel
+3. Grid lines
+4. Visited cells (cyan)
+5. Frontier cells (yellow)
+6. Current cell (purple)
+7. Path line (gold)
+8. Start/goal circles
 
 ## TypeScript strictness
 
