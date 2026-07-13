@@ -1,5 +1,8 @@
-import { CellPosition, GridModel, AlgorithmStep } from '../types';
+import { CellType, CellPosition, GridModel, AlgorithmStep } from '../types';
 import { COLORS } from '../constants/colors';
+
+const PATH_WIDTH_RATIO = 0.6;
+const MARKER_RADIUS_RATIO = 0.35;
 
 /**
  * Renders one frame of the algorithm visualization.
@@ -20,8 +23,8 @@ export function renderFrame(
 
   ctx.clearRect(0, 0, width, height);
 
-  drawWalls(ctx, grid, cellSize);
-  drawGravel(ctx, grid, cellSize);
+  fillCellsOfType(ctx, grid, cellSize, 'wall', COLORS.wall);
+  fillCellsOfType(ctx, grid, cellSize, 'gravel', COLORS.gravel);
   drawGridLines(ctx, grid, cellSize);
 
   if (step) {
@@ -38,32 +41,17 @@ export function renderFrame(
   drawStartGoal(ctx, grid, cellSize);
 }
 
-function drawWalls(
+function fillCellsOfType(
   ctx: CanvasRenderingContext2D,
   grid: GridModel,
-  cellSize: number
+  cellSize: number,
+  type: CellType,
+  color: string
 ): void {
+  ctx.fillStyle = color;
   for (let r = 0; r < grid.rows; r++) {
     for (let c = 0; c < grid.cols; c++) {
-      const cell = grid.cells[r][c];
-      if (cell === 'wall') {
-        ctx.fillStyle = COLORS.wall;
-        ctx.fillRect(c * cellSize, r * cellSize, cellSize, cellSize);
-      }
-    }
-  }
-}
-
-function drawGravel(
-  ctx: CanvasRenderingContext2D,
-  grid: GridModel,
-  cellSize: number
-): void {
-  for (let r = 0; r < grid.rows; r++) {
-    for (let c = 0; c < grid.cols; c++) {
-      const cell = grid.cells[r][c];
-      if (cell === 'gravel') {
-        ctx.fillStyle = COLORS.gravel;
+      if (grid.cells[r][c] === type) {
         ctx.fillRect(c * cellSize, r * cellSize, cellSize, cellSize);
       }
     }
@@ -132,7 +120,7 @@ function drawPath(
   if (path.length === 0) return;
 
   ctx.strokeStyle = COLORS.path;
-  ctx.lineWidth = cellSize * 0.6;
+  ctx.lineWidth = cellSize * PATH_WIDTH_RATIO;
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
 
@@ -158,7 +146,7 @@ function drawStartGoal(
   grid: GridModel,
   cellSize: number
 ): void {
-  const radius = cellSize * 0.35;
+  const radius = cellSize * MARKER_RADIUS_RATIO;
 
   if (grid.start) {
     ctx.fillStyle = COLORS.start;
