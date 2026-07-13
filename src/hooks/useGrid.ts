@@ -1,16 +1,16 @@
 import { useState, useCallback } from 'react';
 import { CellPosition, EditMode, GridModel } from '../types';
 import {
-  createGrid as makeGrid,
+  createGrid,
   toggleWall,
   setStart,
   setGoal,
   clearWalls,
-  resetGrid as resetGridFn,
+  resetGrid,
 } from '../grid/gridModel';
 
 export function useGrid(rows: number, cols: number) {
-  const [grid, setGrid] = useState<GridModel>(() => makeGrid(rows, cols));
+  const [grid, setGrid] = useState<GridModel>(() => createGrid(rows, cols));
   const [mode, setMode] = useState<EditMode>('wall');
 
   const handleCellClick = useCallback(
@@ -36,8 +36,8 @@ export function useGrid(rows: number, cols: number) {
   }, []);
 
   const handleReset = useCallback(() => {
-    setGrid(resetGridFn(grid));
-  }, [grid]);
+    setGrid((prev) => resetGrid(prev));
+  }, []);
 
   return {
     grid,
