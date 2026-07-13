@@ -16,17 +16,16 @@ export function GridCanvas({ grid, step, onCellClick, isAnimating }: GridCanvasP
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const mouseDownRef = useRef(false);
 
-  const cellSize = CELL_SIZE;
-  const width = grid.cols * cellSize;
-  const height = grid.rows * cellSize;
+  const width = grid.cols * CELL_SIZE;
+  const height = grid.rows * CELL_SIZE;
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
-    renderFrame(ctx, grid, step, cellSize);
-  }, [grid, step, cellSize]);
+    renderFrame(ctx, grid, step, CELL_SIZE);
+  }, [grid, step]);
 
   const getCellPos = useCallback(
     (e: React.MouseEvent<HTMLCanvasElement>): CellPosition | null => {
@@ -35,14 +34,14 @@ export function GridCanvas({ grid, step, onCellClick, isAnimating }: GridCanvasP
       const rect = canvas.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
-      const col = Math.floor(x / cellSize);
-      const row = Math.floor(y / cellSize);
+      const col = Math.floor(x / CELL_SIZE);
+      const row = Math.floor(y / CELL_SIZE);
       if (row >= 0 && row < grid.rows && col >= 0 && col < grid.cols) {
         return { row, col };
       }
       return null;
     },
-    [grid.rows, grid.cols, cellSize]
+    [grid.rows, grid.cols]
   );
 
   const handleMouseDown = useCallback(
