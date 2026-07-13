@@ -1,5 +1,5 @@
 import { AlgorithmStep, AlgorithmInfo, GridModel } from '../types';
-import { hasGravel } from '../grid/gridUtils';
+import { hasGravel, pathCost } from '../grid/gridUtils';
 import { COLORS } from '../constants/colors';
 import styles from './InfoPanel.module.css';
 
@@ -21,19 +21,24 @@ const LEGEND_ITEMS = [
   { color: COLORS.path, label: 'Path' },
 ];
 
-function getStatus(step: AlgorithmStep | null, hasAlgorithm: boolean): string {
+function getStatus(step: AlgorithmStep | null, hasAlgorithm: boolean, grid: GridModel): string {
   if (!hasAlgorithm) return 'Ready';
   if (!step) return 'Ready';
-  if (step.done && step.path) return `Path found! (length: ${step.path.length - 1})`;
+  if (step.done && step.path) {
+    const steps = step.path.length - 1;
+    const cost = pathCost(step.path, grid);
+    return `Path found! (length: ${steps}, cost: ${cost})`;
+  }
   if (step.done && !step.path) return 'No path exists';
   return 'Searching...';
 }
 
 export function InfoPanel({ step, algorithmInfo, hasAlgorithm, grid }: InfoPanelProps) {
-  const status = getStatus(step, hasAlgorithm);
+  const status = getStatus(step, hasAlgorithm, grid);
   const visitedCount = step ? step.visited.length : 0;
   const frontierCount = step ? step.frontier.length : 0;
-  const pathLength = step?.path ? step.path.length - 1 : null;
+  const pathSteps = step?.path ? step.path.length - 1 : null;
+  const pathTotalCost = step?.path ? pathCost(step.path, grid) : null;
 
   const showsWarning =
     algorithmInfo &&
@@ -62,9 +67,9 @@ export function InfoPanel({ step, algorithmInfo, hasAlgorithm, grid }: InfoPanel
           <span className={styles.stat}>
             Frontier: <strong>{frontierCount}</strong>
           </span>
-          {pathLength !== null && (
+          {pathSteps !== null && (
             <span className={styles.stat}>
-              Path: <strong>{pathLength}</strong>
+              Path: <strong>{pathSteps} steps (cost: {pathTotalCost})</strong>
             </span>
           )}
         </div>

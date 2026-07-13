@@ -66,6 +66,12 @@ export function hasGravel(grid: GridModel): boolean {
   return false;
 }
 
+export function pathCost(path: CellPosition[], grid: GridModel): number {
+  return path
+    .slice(1)
+    .reduce((sum, p) => sum + getCost(grid.cells[p.row][p.col]), 0);
+}
+
 export function pathExists(grid: GridModel): boolean {
   if (!grid.start || !grid.goal) return false;
 
