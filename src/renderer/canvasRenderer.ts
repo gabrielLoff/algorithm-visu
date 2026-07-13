@@ -1,17 +1,14 @@
 import { CellPosition, GridModel, AlgorithmStep } from '../types';
+import { COLORS } from '../constants/colors';
 
-const COLORS = {
-  empty: '#f0f0f0',
-  wall: '#374151',
-  start: '#22c55e',
-  goal: '#ef4444',
-  visited: 'rgba(103, 232, 249, 0.4)',
-  frontier: 'rgba(253, 224, 71, 0.6)',
-  current: '#a855f7',
-  path: '#facc15',
-  gridLine: '#d1d5db',
-};
-
+/**
+ * Renders one frame of the algorithm visualization.
+ *
+ * @param ctx - Canvas 2D rendering context
+ * @param grid - Static cell state (walls, start, goal positions)
+ * @param step - Dynamic algorithm state (frontier, visited, current, path)
+ * @param cellSize - Pixel size of each grid cell
+ */
 export function renderFrame(
   ctx: CanvasRenderingContext2D,
   grid: GridModel,
@@ -23,7 +20,7 @@ export function renderFrame(
 
   ctx.clearRect(0, 0, width, height);
 
-  drawGridBackground(ctx, grid, cellSize);
+  drawWalls(ctx, grid, cellSize);
   drawGridLines(ctx, grid, cellSize);
 
   if (step) {
@@ -40,7 +37,7 @@ export function renderFrame(
   drawStartGoal(ctx, grid, cellSize);
 }
 
-function drawGridBackground(
+function drawWalls(
   ctx: CanvasRenderingContext2D,
   grid: GridModel,
   cellSize: number
