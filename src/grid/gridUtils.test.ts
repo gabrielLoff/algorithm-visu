@@ -114,6 +114,40 @@ describe('euclidean', () => {
   });
 });
 
+describe('getNeighbors with step', () => {
+  it('defaults to step=1 (backward compatible)', () => {
+    const grid = smallGrid();
+    const neighbors = getNeighbors(grid, { row: 2, col: 2 });
+    expect(neighbors).toHaveLength(4);
+    const coords = neighbors.map((n) => `${n.pos.row},${n.pos.col}`).sort();
+    expect(coords).toEqual(['1,2', '2,1', '2,3', '3,2']);
+  });
+
+  it('returns cells at distance 2 with step=2', () => {
+    const grid = smallGrid();
+    const neighbors = getNeighbors(grid, { row: 2, col: 2 }, 2);
+    expect(neighbors.length).toBeGreaterThanOrEqual(1);
+    const coords = neighbors.map((n) => `${n.pos.row},${n.pos.col}`).sort();
+    expect(coords).toEqual(['0,2', '2,0', '2,4', '4,2']);
+  });
+
+  it('excludes out-of-bounds cells with step=2', () => {
+    const grid = smallGrid();
+    const neighbors = getNeighbors(grid, { row: 0, col: 0 }, 2);
+    expect(neighbors).toHaveLength(2);
+    const coords = neighbors.map((n) => `${n.pos.row},${n.pos.col}`).sort();
+    expect(coords).toEqual(['0,2', '2,0']);
+  });
+
+  it('excludes walls even with step > 1', () => {
+    const grid = createGrid(5, 5);
+    grid.cells[2][0] = 'wall';
+    const neighbors = getNeighbors(grid, { row: 2, col: 2 }, 2);
+    const coords = neighbors.map((n) => `${n.pos.row},${n.pos.col}`).sort();
+    expect(coords).toEqual(['0,2', '2,4', '4,2']);
+  });
+});
+
 describe('cellKey', () => {
   it('formats a position as "row,col"', () => {
     expect(cellKey({ row: 3, col: 7 })).toBe('3,7');

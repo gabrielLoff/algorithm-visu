@@ -1,23 +1,5 @@
 import { GridModel, CellPosition, CellType } from '../types';
-
-const DIRS: [number, number][] = [
-  [-1, 0],
-  [1, 0],
-  [0, -1],
-  [0, 1],
-];
-
-function neighbors(grid: GridModel, pos: CellPosition): CellPosition[] {
-  const result: CellPosition[] = [];
-  for (const [dr, dc] of DIRS) {
-    const nr = pos.row + dr;
-    const nc = pos.col + dc;
-    if (nr >= 0 && nr < grid.rows && nc >= 0 && nc < grid.cols) {
-      result.push({ row: nr, col: nc });
-    }
-  }
-  return result;
-}
+import { getNeighbors, DIRECTIONS } from '../grid/gridUtils';
 
 export function ensureSolvable(grid: GridModel): GridModel {
   const { start, goal } = grid;
@@ -34,16 +16,19 @@ export function ensureSolvable(grid: GridModel): GridModel {
   let found = false;
   while (queue.length > 0 && !found) {
     const current = queue.shift()!;
-    for (const n of neighbors(grid, current)) {
-      const nKey = `${n.row},${n.col}`;
+    for (const dir of DIRECTIONS) {
+      const nr = current.row + dir.row;
+      const nc = current.col + dir.col;
+      if (nr < 0 || nr >= grid.rows || nc < 0 || nc >= grid.cols) continue;
+      const nKey = `${nr},${nc}`;
       if (visited.has(nKey)) continue;
       visited.add(nKey);
       cameFrom.set(nKey, current);
-      if (n.row === goal.row && n.col === goal.col) {
+      if (nr === goal.row && nc === goal.col) {
         found = true;
         break;
       }
-      queue.push(n);
+      queue.push({ row: nr, col: nc });
     }
   }
 
@@ -78,13 +63,11 @@ function hasPath(grid: GridModel): boolean {
       return true;
     }
 
-    for (const n of neighbors(grid, current)) {
-      const type = grid.cells[n.row][n.col] as CellType;
-      if (type === 'wall') continue;
-      const key = `${n.row},${n.col}`;
+    for (const n of getNeighbors(grid, current)) {
+      const key = `${n.pos.row},${n.pos.col}`;
       if (!visited.has(key)) {
         visited.add(key);
-        queue.push(n);
+        queue.push(n.pos);
       }
     }
   }

@@ -9,7 +9,7 @@ export function parseCellKey(key: string): CellPosition {
   return { row: r, col: c };
 }
 
-const DIRECTIONS: CellPosition[] = [
+export const DIRECTIONS: CellPosition[] = [
   { row: -1, col: 0 },
   { row: 1, col: 0 },
   { row: 0, col: -1 },
@@ -30,11 +30,15 @@ export interface NeighborInfo {
   cost: number;
 }
 
-export function getNeighbors(grid: GridModel, pos: CellPosition): NeighborInfo[] {
+export function getNeighbors(
+  grid: GridModel,
+  pos: CellPosition,
+  step: number = 1,
+): NeighborInfo[] {
   const neighbors: NeighborInfo[] = [];
   for (const dir of DIRECTIONS) {
-    const nr = pos.row + dir.row;
-    const nc = pos.col + dir.col;
+    const nr = pos.row + dir.row * step;
+    const nc = pos.col + dir.col * step;
     if (nr >= 0 && nr < grid.rows && nc >= 0 && nc < grid.cols) {
       const cellType = grid.cells[nr][nc];
       if (cellType !== 'wall') {
