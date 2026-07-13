@@ -41,6 +41,7 @@ export function useGrid(rows: number, cols: number) {
 
   return {
     grid,
+    setGrid,
     mode,
     setMode,
     handleCellClick,

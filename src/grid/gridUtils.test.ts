@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { getNeighbors, manhattan, euclidean } from './gridUtils';
+import { getNeighbors, manhattan, euclidean, cellKey, parseCellKey } from './gridUtils';
 import { createGrid } from './gridModel';
 
 function smallGrid() {
@@ -58,5 +58,23 @@ describe('euclidean', () => {
 
   it('returns straight-line distance', () => {
     expect(euclidean({ row: 0, col: 0 }, { row: 3, col: 4 })).toBe(5);
+  });
+});
+
+describe('cellKey', () => {
+  it('formats a position as "row,col"', () => {
+    expect(cellKey({ row: 3, col: 7 })).toBe('3,7');
+  });
+});
+
+describe('parseCellKey', () => {
+  it('parses "row,col" back into a CellPosition', () => {
+    const pos = parseCellKey('5,10');
+    expect(pos).toEqual({ row: 5, col: 10 });
+  });
+
+  it('is the inverse of cellKey', () => {
+    const original = { row: 12, col: 34 };
+    expect(parseCellKey(cellKey(original))).toEqual(original);
   });
 });

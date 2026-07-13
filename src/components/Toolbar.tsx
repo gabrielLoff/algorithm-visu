@@ -1,10 +1,14 @@
 import { EditMode } from '../types';
 import { getAlgorithms } from '../algorithms';
+import { getMazes } from '../maze';
 import styles from './Toolbar.module.css';
 
 interface ToolbarProps {
   selectedAlgorithm: string;
   onAlgorithmChange: (name: string) => void;
+  selectedMaze: string;
+  onMazeChange: (name: string) => void;
+  onGenerateMaze: () => void;
   mode: EditMode;
   onModeChange: (mode: EditMode) => void;
   onClearWalls: () => void;
@@ -15,6 +19,9 @@ interface ToolbarProps {
 export function Toolbar({
   selectedAlgorithm,
   onAlgorithmChange,
+  selectedMaze,
+  onMazeChange,
+  onGenerateMaze,
   mode,
   onModeChange,
   onClearWalls,
@@ -22,6 +29,7 @@ export function Toolbar({
   isAnimating,
 }: ToolbarProps) {
   const algorithms = getAlgorithms();
+  const mazes = getMazes();
 
   return (
     <div className={styles.toolbar}>
@@ -39,6 +47,29 @@ export function Toolbar({
             </option>
           ))}
         </select>
+      </div>
+
+      <div className={styles.section}>
+        <label className={styles.label}>Maze</label>
+        <select
+          className={styles.select}
+          value={selectedMaze}
+          onChange={(e) => onMazeChange(e.target.value)}
+          disabled={isAnimating}
+        >
+          {mazes.map((m) => (
+            <option key={m.name} value={m.name}>
+              {m.name}
+            </option>
+          ))}
+        </select>
+        <button
+          className={styles.btn}
+          onClick={onGenerateMaze}
+          disabled={isAnimating}
+        >
+          Generate
+        </button>
       </div>
 
       <div className={styles.section}>

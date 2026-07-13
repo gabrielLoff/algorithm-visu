@@ -6,6 +6,7 @@ import { InfoPanel } from './components/InfoPanel';
 import { useGrid } from './hooks/useGrid';
 import { useAnimation } from './hooks/useAnimation';
 import { getAlgorithm } from './algorithms';
+import { getMaze, getMazes } from './maze';
 import type { AlgorithmInfo } from './types';
 import styles from './App.module.css';
 
@@ -13,9 +14,10 @@ const ROWS = 25;
 const COLS = 50;
 
 export default function App() {
-  const { grid, mode, setMode, handleCellClick, handleClearWalls, handleReset } = useGrid(ROWS, COLS);
+  const { grid, setGrid, mode, setMode, handleCellClick, handleClearWalls, handleReset } = useGrid(ROWS, COLS);
   const animation = useAnimation(grid);
   const [selectedAlgo, setSelectedAlgo] = useState('A*');
+  const [selectedMaze, setSelectedMaze] = useState(getMazes()[0].name);
 
   const algorithmInfo: AlgorithmInfo | null = getAlgorithm(selectedAlgo) ?? null;
 
@@ -30,11 +32,26 @@ export default function App() {
     setSelectedAlgo(name);
   }, []);
 
+  const handleMazeChange = useCallback((name: string) => {
+    setSelectedMaze(name);
+  }, []);
+
+  const handleGenerateMaze = useCallback(() => {
+    const maze = getMaze(selectedMaze);
+    if (maze) {
+      animation.pause();
+      setGrid((prev) => maze.fn(prev));
+    }
+  }, [selectedMaze, animation, setGrid]);
+
   return (
     <div className={styles.app}>
       <Toolbar
         selectedAlgorithm={selectedAlgo}
         onAlgorithmChange={handleAlgorithmChange}
+        selectedMaze={selectedMaze}
+        onMazeChange={handleMazeChange}
+        onGenerateMaze={handleGenerateMaze}
         mode={mode}
         onModeChange={setMode}
         onClearWalls={handleClearWalls}
