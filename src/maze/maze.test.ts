@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { createGrid } from '../grid/gridModel';
-import { getNeighbors } from '../grid/gridUtils';
+import { pathExists } from '../grid/gridUtils';
 import { recursiveDivision } from './recursiveDivision';
 import { prim } from './prim';
 
@@ -8,34 +8,11 @@ function cellType(grid: ReturnType<typeof createGrid>, r: number, c: number) {
   return grid.cells[r][c];
 }
 
-function gridHasPath(grid: ReturnType<typeof createGrid>): boolean {
-  if (!grid.start || !grid.goal) return false;
-
-  const visited = new Set<string>();
-  const queue = [grid.start];
-  visited.add(`${grid.start.row},${grid.start.col}`);
-
-  while (queue.length > 0) {
-    const current = queue.shift()!;
-    if (current.row === grid.goal.row && current.col === grid.goal.col) return true;
-
-    for (const n of getNeighbors(grid, current)) {
-      const key = `${n.pos.row},${n.pos.col}`;
-      if (!visited.has(key)) {
-        visited.add(key);
-        queue.push(n.pos);
-      }
-    }
-  }
-
-  return false;
-}
-
 describe('recursiveDivision', () => {
   it('produces a solvable maze from an empty grid', () => {
     const grid = createGrid(11, 11);
     const maze = recursiveDivision(grid);
-    expect(gridHasPath(maze)).toBe(true);
+    expect(pathExists(maze)).toBe(true);
   });
 
   it('does not turn start or goal into walls', () => {
@@ -62,7 +39,7 @@ describe('prim', () => {
   it('produces a solvable maze from an empty grid', () => {
     const grid = createGrid(11, 11);
     const maze = prim(grid);
-    expect(gridHasPath(maze)).toBe(true);
+    expect(pathExists(maze)).toBe(true);
   });
 
   it('does not turn start or goal into walls', () => {

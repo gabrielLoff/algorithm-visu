@@ -1,11 +1,11 @@
 import { GridModel, CellPosition, CellType } from '../types';
-import { getNeighbors, DIRECTIONS } from '../grid/gridUtils';
+import { DIRECTIONS, pathExists } from '../grid/gridUtils';
 
 export function ensureSolvable(grid: GridModel): GridModel {
   const { start, goal } = grid;
   if (!start || !goal) return grid;
 
-  if (hasPath(grid)) return grid;
+  if (pathExists(grid)) return grid;
 
   const queue: CellPosition[] = [start];
   const cameFrom = new Map<string, CellPosition>();
@@ -48,29 +48,4 @@ export function ensureSolvable(grid: GridModel): GridModel {
   }
 
   return { ...grid, cells };
-}
-
-function hasPath(grid: GridModel): boolean {
-  if (!grid.start || !grid.goal) return false;
-
-  const visited = new Set<string>();
-  const queue = [grid.start];
-  visited.add(`${grid.start.row},${grid.start.col}`);
-
-  while (queue.length > 0) {
-    const current = queue.shift()!;
-    if (current.row === grid.goal.row && current.col === grid.goal.col) {
-      return true;
-    }
-
-    for (const n of getNeighbors(grid, current)) {
-      const key = `${n.pos.row},${n.pos.col}`;
-      if (!visited.has(key)) {
-        visited.add(key);
-        queue.push(n.pos);
-      }
-    }
-  }
-
-  return false;
 }

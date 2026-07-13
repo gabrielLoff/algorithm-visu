@@ -65,3 +65,28 @@ export function hasGravel(grid: GridModel): boolean {
   }
   return false;
 }
+
+export function pathExists(grid: GridModel): boolean {
+  if (!grid.start || !grid.goal) return false;
+
+  const visited = new Set<string>();
+  const queue: CellPosition[] = [grid.start];
+  visited.add(cellKey(grid.start));
+
+  while (queue.length > 0) {
+    const current = queue.shift()!;
+    if (current.row === grid.goal.row && current.col === grid.goal.col) {
+      return true;
+    }
+
+    for (const n of getNeighbors(grid, current)) {
+      const key = cellKey(n.pos);
+      if (!visited.has(key)) {
+        visited.add(key);
+        queue.push(n.pos);
+      }
+    }
+  }
+
+  return false;
+}
