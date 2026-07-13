@@ -2,6 +2,13 @@ import { GridModel, CellType } from '../types';
 import { cellKey, getNeighbors } from '../grid/gridUtils';
 import { ensureSolvable } from './mazeUtils';
 
+interface FrontierEntry {
+  cellRow: number;
+  cellCol: number;
+  wallRow: number;
+  wallCol: number;
+}
+
 export function prim(grid: GridModel): GridModel {
   const cells = grid.cells.map((row) => [...row]);
   const { rows, cols } = grid;
@@ -12,7 +19,7 @@ export function prim(grid: GridModel): GridModel {
   const startC = 1 + 2 * Math.floor(Math.random() * Math.floor((cols - 2) / 2));
   passage.add(cellKey({ row: startR, col: startC }));
 
-  const frontier: [number, number, number, number][] = [];
+  const frontier: FrontierEntry[] = [];
 
   for (const n of getNeighbors(grid, { row: startR, col: startC }, 2)) {
     const nr = n.pos.row;
@@ -22,12 +29,12 @@ export function prim(grid: GridModel): GridModel {
     if (passage.has(nKey)) continue;
     const wr = startR + (nr - startR) / 2;
     const wc = startC + (nc - startC) / 2;
-    frontier.push([nr, nc, wr, wc]);
+    frontier.push({ cellRow: nr, cellCol: nc, wallRow: wr, wallCol: wc });
   }
 
   while (frontier.length > 0) {
     const idx = Math.floor(Math.random() * frontier.length);
-    const [cr, cc, wr, wc] = frontier[idx];
+    const { cellRow: cr, cellCol: cc, wallRow: wr, wallCol: wc } = frontier[idx];
     frontier.splice(idx, 1);
 
     const cKey = cellKey({ row: cr, col: cc });
@@ -44,7 +51,7 @@ export function prim(grid: GridModel): GridModel {
       if (passage.has(nKey)) continue;
       const wr2 = cr + (nr - cr) / 2;
       const wc2 = cc + (nc - cc) / 2;
-      frontier.push([nr, nc, wr2, wc2]);
+      frontier.push({ cellRow: nr, cellCol: nc, wallRow: wr2, wallCol: wc2 });
     }
   }
 
