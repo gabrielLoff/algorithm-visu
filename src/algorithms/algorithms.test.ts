@@ -1,0 +1,144 @@
+import { describe, it, expect } from 'vitest';
+import { createGrid, toggleWall } from '../grid/gridModel';
+import { astar } from './astar';
+import { dijkstra } from './dijkstra';
+import { bfs } from './bfs';
+import { dfs } from './dfs';
+import type { AlgorithmFn, GridModel, AlgorithmStep } from '../types';
+
+function makeGrid(rows: number, cols: number): GridModel {
+  return createGrid(rows, cols);
+}
+
+function wallOffGoal(grid: GridModel): GridModel {
+  if (!grid.goal) return grid;
+  const { row, col } = grid.goal;
+  const neighbors = [
+    { row: row - 1, col },
+    { row: row + 1, col },
+    { row, col: col - 1 },
+    { row, col: col + 1 },
+  ];
+  let g = grid;
+  for (const n of neighbors) {
+    if (n.row >= 0 && n.row < grid.rows && n.col >= 0 && n.col < grid.cols) {
+      if (g.cells[n.row][n.col] === 'empty') {
+        g = toggleWall(g, n);
+      }
+    }
+  }
+  return g;
+}
+
+function runAlgorithm(fn: AlgorithmFn, grid: GridModel): AlgorithmStep[] {
+  const steps: AlgorithmStep[] = [];
+  const gen = fn(grid);
+  for (const step of gen) {
+    steps.push(step);
+  }
+  return steps;
+}
+
+function pathIsContinuous(path: NonNullable<AlgorithmStep['path']>): boolean {
+  for (let i = 1; i < path.length; i++) {
+    const dr = Math.abs(path[i].row - path[i - 1].row);
+    const dc = Math.abs(path[i].col - path[i - 1].col);
+    if (dr + dc !== 1) return false;
+  }
+  return true;
+}
+
+function testAlgorithm(name: string, fn: AlgorithmFn, shouldFindShortest: boolean) {
+  describe(name, () => {
+    it('finds a path on an empty grid', () => {
+      const grid = makeGrid(5, 5);
+      const steps = runAlgorithm(fn, grid);
+      const last = steps[steps.length - 1];
+
+      expect(last.done).toBe(true);
+      expect(last.path).not.toBeNull();
+      expect(last.path!.length).toBeGreaterThan(0);
+    });
+
+    it('reports failure when goal is unreachable', () => {
+      let grid = makeGrid(5, 5);
+      grid = wallOffGoal(grid);
+      const steps = runAlgorithm(fn, grid);
+      const last = steps[steps.length - 1];
+
+      expect(last.done).toBe(true);
+      expect(last.path).toBeNull();
+    });
+
+    it('produces a contiguous path', () => {
+      const grid = makeGrid(5, 5);
+      const steps = runAlgorithm(fn, grid);
+      const last = steps[steps.length - 1];
+
+      expect(last.path).not.toBeNull();
+      expect(pathIsContinuous(last.path!)).toBe(true);
+    });
+
+    it('path starts at start and ends at goal', () => {
+      const grid = makeGrid(5, 5);
+      const steps = runAlgorithm(fn, grid);
+      const last = steps[steps.length - 1];
+
+      expect(last.path).not.toBeNull();
+      const path = last.path!;
+      expect(path[0]).toEqual(grid.start);
+      expect(path[path.length - 1]).toEqual(grid.goal);
+    });
+
+    it('only the final step has done=true', () => {
+      const grid = makeGrid(5, 5);
+      const steps = runAlgorithm(fn, grid);
+
+      for (let i = 0; i < steps.length - 1; i++) {
+        expect(steps[i].done).toBe(false);
+      }
+      expect(steps[steps.length - 1].done).toBe(true);
+    });
+
+    it('yields at least one step', () => {
+      const grid = makeGrid(5, 5);
+      const steps = runAlgorithm(fn, grid);
+      expect(steps.length).toBeGreaterThanOrEqual(1);
+    });
+
+    it('handles start == goal (adjacent)', () => {
+      const grid = makeGrid(3, 3);
+      grid.cells[1][1] = 'start';
+      grid.cells[1][2] = 'goal';
+      grid.start = { row: 1, col: 1 };
+      grid.goal = { row: 1, col: 2 };
+
+      const steps = runAlgorithm(fn, grid);
+      const last = steps[steps.length - 1];
+
+      expect(last.done).toBe(true);
+      expect(last.path).not.toBeNull();
+    });
+
+    if (shouldFindShortest) {
+      it('finds the shortest path on empty grid', () => {
+        const grid = makeGrid(5, 5);
+        const steps = runAlgorithm(fn, grid);
+        const last = steps[steps.length - 1];
+        const path = last.path!;
+
+        const expected = Math.abs(grid.start!.row - grid.goal!.row) +
+          Math.abs(grid.start!.col - grid.goal!.col) + 1;
+        expect(path.length).toBe(expected);
+      });
+    }
+
+  });
+}
+
+describe('algorithms', () => {
+  testAlgorithm('A*', astar, true);
+  testAlgorithm('Dijkstra', dijkstra, true);
+  testAlgorithm('BFS', bfs, true);
+  testAlgorithm('DFS', dfs, false);
+});
