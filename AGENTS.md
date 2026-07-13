@@ -92,6 +92,18 @@ Every algorithm is a **generator function** `(grid: GridModel) => AlgorithmGener
 - Dark theme background: `#0f172a`, text: `#e5e7eb`
 - CSS Modules only — no global stylesheet approach outside of `index.css` (reset + body defaults)
 
+## Git workflow
+
+This project follows **GitHub Flow**. Every agent must adhere to these rules when making changes:
+
+- **Branch from `main`** — never commit directly to `main`. Create a branch from the latest `main`.
+- **Branch naming**: `issue/<number>-<slug>` where `<number>` is the GitHub issue being implemented (e.g. `issue/3-clean-up-grid-model`).
+- **Work on the branch** — implement, typecheck (`npm run build`), and run tests (`npm test`) before pushing.
+- **Open a PR** — push the branch, open a pull request against `main` with a descriptive title.
+- **Squash merge** — merge via squash so each PR produces one clean commit on `main`.
+- **Commit format** — use [Conventional Commits](https://www.conventionalcommits.org/) for the squash title: `feat:`, `fix:`, `chore:`, `refactor:`, `test:`, etc.
+- **`main` is protected** — requires a PR; direct pushes are rejected.
+
 ## Agent skills
 
 ### Issue tracker
