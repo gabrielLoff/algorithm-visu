@@ -47,12 +47,6 @@ export function PathfindingPage() {
 
   return (
     <div className={styles.page}>
-      <button
-        className={styles.homeBtn}
-        onClick={() => { window.location.hash = '#/'; }}
-      >
-        Home
-      </button>
       <Toolbar
         selectedAlgorithm={selectedAlgo}
         onAlgorithmChange={handleAlgorithmChange}

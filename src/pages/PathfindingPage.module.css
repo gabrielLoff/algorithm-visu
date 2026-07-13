@@ -6,21 +6,3 @@
   color: #e5e7eb;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
-
-.homeBtn {
-  position: absolute;
-  top: 8px;
-  left: 8px;
-  z-index: 10;
-  background: #1e293b;
-  color: #e5e7eb;
-  border: 1px solid #475569;
-  border-radius: 6px;
-  padding: 4px 12px;
-  font-size: 0.8rem;
-  cursor: pointer;
-}
-
-.homeBtn:hover {
-  background: #334155;
-}
