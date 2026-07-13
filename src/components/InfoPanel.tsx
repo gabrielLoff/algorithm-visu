@@ -1,4 +1,5 @@
-import { AlgorithmStep, AlgorithmInfo } from '../types';
+import { AlgorithmStep, AlgorithmInfo, GridModel } from '../types';
+import { hasGravel } from '../grid/gridUtils';
 import { COLORS } from '../constants/colors';
 import styles from './InfoPanel.module.css';
 
@@ -6,12 +7,14 @@ interface InfoPanelProps {
   step: AlgorithmStep | null;
   algorithmInfo: AlgorithmInfo | null;
   hasAlgorithm: boolean;
+  grid: GridModel;
 }
 
 const LEGEND_ITEMS = [
+  { color: COLORS.wall, label: 'Wall' },
+  { color: COLORS.gravel, label: 'Gravel (2x cost)' },
   { color: COLORS.start, label: 'Start' },
   { color: COLORS.goal, label: 'Goal' },
-  { color: COLORS.wall, label: 'Wall' },
   { color: COLORS.visited, label: 'Visited' },
   { color: COLORS.frontier, label: 'Frontier' },
   { color: COLORS.current, label: 'Current' },
@@ -26,11 +29,21 @@ function getStatus(step: AlgorithmStep | null, hasAlgorithm: boolean): string {
   return 'Searching...';
 }
 
-export function InfoPanel({ step, algorithmInfo, hasAlgorithm }: InfoPanelProps) {
+export function InfoPanel({ step, algorithmInfo, hasAlgorithm, grid }: InfoPanelProps) {
   const status = getStatus(step, hasAlgorithm);
   const visitedCount = step ? step.visited.length : 0;
   const frontierCount = step ? step.frontier.length : 0;
   const pathLength = step?.path ? step.path.length - 1 : null;
+
+  const showsWarning =
+    algorithmInfo &&
+    !algorithmInfo.weighted &&
+    hasGravel(grid);
+
+  const guaranteed =
+    algorithmInfo
+      ? algorithmInfo.guaranteesShortest(grid)
+      : false;
 
   return (
     <div className={styles.panel}>
@@ -41,23 +54,33 @@ export function InfoPanel({ step, algorithmInfo, hasAlgorithm }: InfoPanelProps)
         )}
       </div>
 
-      <div className={styles.stats}>
-        {hasAlgorithm && (
-          <>
+      {hasAlgorithm && (
+        <div className={styles.stats}>
+          <span className={styles.stat}>
+            Visited: <strong>{visitedCount}</strong>
+          </span>
+          <span className={styles.stat}>
+            Frontier: <strong>{frontierCount}</strong>
+          </span>
+          {pathLength !== null && (
             <span className={styles.stat}>
-              Visited: <strong>{visitedCount}</strong>
+              Path: <strong>{pathLength}</strong>
             </span>
-            <span className={styles.stat}>
-              Frontier: <strong>{frontierCount}</strong>
-            </span>
-            {pathLength !== null && (
-              <span className={styles.stat}>
-                Path: <strong>{pathLength}</strong>
-              </span>
-            )}
-          </>
-        )}
-      </div>
+          )}
+        </div>
+      )}
+
+      {showsWarning && (
+        <div className={styles.warning}>
+          This algorithm does not account for terrain costs.
+        </div>
+      )}
+
+      {algorithmInfo && (
+        <div className={styles.guarantee}>
+          Shortest path guaranteed: <strong>{guaranteed ? 'Yes' : 'No'}</strong>
+        </div>
+      )}
 
       <div className={styles.legend}>
         {LEGEND_ITEMS.map((item) => (

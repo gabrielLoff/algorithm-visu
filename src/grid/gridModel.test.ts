@@ -2,10 +2,12 @@ import { describe, it, expect } from 'vitest';
 import {
   createGrid,
   setCell,
-  toggleWall,
+  setWall,
+  setGravel,
+  setDefault,
   setStart,
   setGoal,
-  clearWalls,
+  clearAll,
   resetGrid,
 } from './gridModel';
 import type { CellType } from '../types';
@@ -31,15 +33,15 @@ describe('createGrid', () => {
     expect(grid.cells[2][6]).toBe('goal');
   });
 
-  it('fills remaining cells as empty', () => {
+  it('fills remaining cells as default', () => {
     const grid = createGrid(3, 3);
-    let emptyCount = 0;
+    let defaultCount = 0;
     for (const row of grid.cells) {
       for (const cell of row) {
-        if (cell === 'empty') emptyCount++;
+        if (cell === 'default') defaultCount++;
       }
     }
-    expect(emptyCount).toBe(7);
+    expect(defaultCount).toBe(7);
   });
 });
 
@@ -48,58 +50,144 @@ describe('setCell', () => {
     const grid = createGrid(3, 3);
     const next = setCell(grid, { row: 1, col: 1 }, 'wall');
     expect(next.cells[1][1]).toBe('wall');
-    expect(grid.cells[1][1]).toBe('empty');
+    expect(grid.cells[1][1]).toBe('default');
   });
 });
 
-describe('toggleWall', () => {
-  it('toggles empty to wall', () => {
+describe('setWall', () => {
+  it('places wall on default cell', () => {
     const grid = createGrid(3, 3);
-    const next = toggleWall(grid, { row: 1, col: 1 });
+    const next = setWall(grid, { row: 1, col: 1 });
     expect(next.cells[1][1]).toBe('wall');
   });
 
-  it('toggles wall to empty', () => {
+  it('places wall over gravel cell', () => {
     const grid = createGrid(3, 3);
-    const withWall = toggleWall(grid, { row: 1, col: 1 });
-    const withoutWall = toggleWall(withWall, { row: 1, col: 1 });
-    expect(withoutWall.cells[1][1]).toBe('empty');
+    const withGravel = setGravel(grid, { row: 1, col: 1 });
+    const next = setWall(withGravel, { row: 1, col: 1 });
+    expect(next.cells[1][1]).toBe('wall');
   });
 
-  it('does not toggle start cell', () => {
+  it('is no-op on wall cell (one-way)', () => {
+    const grid = createGrid(3, 3);
+    const withWall = setWall(grid, { row: 1, col: 1 });
+    const next = setWall(withWall, { row: 1, col: 1 });
+    expect(next).toBe(withWall);
+  });
+
+  it('refuses on start cell', () => {
     const grid = createGrid(5, 5);
     const startPos = grid.start!;
-    const next = toggleWall(grid, startPos);
-    expect(next.cells[startPos.row][startPos.col]).toBe('start');
+    const next = setWall(grid, startPos);
+    expect(next).toBe(grid);
   });
 
-  it('does not toggle goal cell', () => {
+  it('refuses on goal cell', () => {
     const grid = createGrid(5, 5);
     const goalPos = grid.goal!;
-    const next = toggleWall(grid, goalPos);
-    expect(next.cells[goalPos.row][goalPos.col]).toBe('goal');
+    const next = setWall(grid, goalPos);
+    expect(next).toBe(grid);
   });
 
   it('does not mutate the original grid', () => {
     const grid = createGrid(3, 3);
-    toggleWall(grid, { row: 1, col: 1 });
-    expect(grid.cells[1][1]).toBe('empty');
+    setWall(grid, { row: 1, col: 1 });
+    expect(grid.cells[1][1]).toBe('default');
+  });
+});
+
+describe('setGravel', () => {
+  it('places gravel on default cell', () => {
+    const grid = createGrid(3, 3);
+    const next = setGravel(grid, { row: 1, col: 1 });
+    expect(next.cells[1][1]).toBe('gravel');
+  });
+
+  it('places gravel over wall cell', () => {
+    const grid = createGrid(3, 3);
+    const withWall = setWall(grid, { row: 1, col: 1 });
+    const next = setGravel(withWall, { row: 1, col: 1 });
+    expect(next.cells[1][1]).toBe('gravel');
+  });
+
+  it('is no-op on gravel cell', () => {
+    const grid = createGrid(3, 3);
+    const withGravel = setGravel(grid, { row: 1, col: 1 });
+    const next = setGravel(withGravel, { row: 1, col: 1 });
+    expect(next).toBe(withGravel);
+  });
+
+  it('refuses on start cell', () => {
+    const grid = createGrid(5, 5);
+    const startPos = grid.start!;
+    const next = setGravel(grid, startPos);
+    expect(next).toBe(grid);
+  });
+
+  it('refuses on goal cell', () => {
+    const grid = createGrid(5, 5);
+    const goalPos = grid.goal!;
+    const next = setGravel(grid, goalPos);
+    expect(next).toBe(grid);
+  });
+});
+
+describe('setDefault', () => {
+  it('clears wall to default', () => {
+    const grid = createGrid(3, 3);
+    const withWall = setWall(grid, { row: 1, col: 1 });
+    const next = setDefault(withWall, { row: 1, col: 1 });
+    expect(next.cells[1][1]).toBe('default');
+  });
+
+  it('clears gravel to default', () => {
+    const grid = createGrid(3, 3);
+    const withGravel = setGravel(grid, { row: 1, col: 1 });
+    const next = setDefault(withGravel, { row: 1, col: 1 });
+    expect(next.cells[1][1]).toBe('default');
+  });
+
+  it('is no-op on default cell', () => {
+    const grid = createGrid(3, 3);
+    const next = setDefault(grid, { row: 1, col: 1 });
+    expect(next).toBe(grid);
+  });
+
+  it('refuses on start cell', () => {
+    const grid = createGrid(5, 5);
+    const startPos = grid.start!;
+    const next = setDefault(grid, startPos);
+    expect(next).toBe(grid);
+  });
+
+  it('refuses on goal cell', () => {
+    const grid = createGrid(5, 5);
+    const goalPos = grid.goal!;
+    const next = setDefault(grid, goalPos);
+    expect(next).toBe(grid);
   });
 });
 
 describe('setStart', () => {
-  it('moves start to an empty cell', () => {
+  it('moves start to a default cell', () => {
     const grid = createGrid(5, 5);
     const oldStart = grid.start!;
     const next = setStart(grid, { row: 1, col: 1 });
     expect(next.start).toEqual({ row: 1, col: 1 });
     expect(next.cells[1][1]).toBe('start');
-    expect(next.cells[oldStart.row][oldStart.col]).toBe('empty');
+    expect(next.cells[oldStart.row][oldStart.col]).toBe('default');
   });
 
   it('refuses to move start onto a wall', () => {
     let grid = createGrid(5, 5);
-    grid = toggleWall(grid, { row: 1, col: 1 });
+    grid = setWall(grid, { row: 1, col: 1 });
+    const next = setStart(grid, { row: 1, col: 1 });
+    expect(next).toBe(grid);
+  });
+
+  it('refuses to move start onto gravel', () => {
+    let grid = createGrid(5, 5);
+    grid = setGravel(grid, { row: 1, col: 1 });
     const next = setStart(grid, { row: 1, col: 1 });
     expect(next).toBe(grid);
   });
@@ -112,18 +200,25 @@ describe('setStart', () => {
 });
 
 describe('setGoal', () => {
-  it('moves goal to an empty cell', () => {
+  it('moves goal to a default cell', () => {
     const grid = createGrid(5, 5);
     const oldGoal = grid.goal!;
     const next = setGoal(grid, { row: 3, col: 3 });
     expect(next.goal).toEqual({ row: 3, col: 3 });
     expect(next.cells[3][3]).toBe('goal');
-    expect(next.cells[oldGoal.row][oldGoal.col]).toBe('empty');
+    expect(next.cells[oldGoal.row][oldGoal.col]).toBe('default');
   });
 
   it('refuses to move goal onto a wall', () => {
     let grid = createGrid(5, 5);
-    grid = toggleWall(grid, { row: 3, col: 3 });
+    grid = setWall(grid, { row: 3, col: 3 });
+    const next = setGoal(grid, { row: 3, col: 3 });
+    expect(next).toBe(grid);
+  });
+
+  it('refuses to move goal onto gravel', () => {
+    let grid = createGrid(5, 5);
+    grid = setGravel(grid, { row: 3, col: 3 });
     const next = setGoal(grid, { row: 3, col: 3 });
     expect(next).toBe(grid);
   });
@@ -135,18 +230,19 @@ describe('setGoal', () => {
   });
 });
 
-describe('clearWalls', () => {
-  it('removes all walls, keeps start and goal', () => {
+describe('clearAll', () => {
+  it('removes all walls and gravel, keeps start and goal', () => {
     let grid = createGrid(5, 5);
-    grid = toggleWall(grid, { row: 0, col: 0 });
-    grid = toggleWall(grid, { row: 1, col: 1 });
-    grid = toggleWall(grid, { row: 2, col: 2 });
+    grid = setWall(grid, { row: 0, col: 0 });
+    grid = setWall(grid, { row: 1, col: 1 });
+    grid = setGravel(grid, { row: 2, col: 2 });
 
-    const cleared = clearWalls(grid);
+    const cleared = clearAll(grid);
 
     for (const row of cleared.cells) {
       for (const cell of row as CellType[]) {
         expect(cell).not.toBe('wall');
+        expect(cell).not.toBe('gravel');
       }
     }
 
@@ -158,7 +254,7 @@ describe('clearWalls', () => {
 describe('resetGrid', () => {
   it('returns a fresh grid with original dimensions', () => {
     let grid = createGrid(5, 5);
-    grid = toggleWall(grid, { row: 0, col: 0 });
+    grid = setWall(grid, { row: 0, col: 0 });
 
     const reset = resetGrid(grid);
     expect(reset.rows).toBe(5);

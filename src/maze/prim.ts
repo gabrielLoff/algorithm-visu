@@ -53,7 +53,7 @@ export function prim(grid: GridModel): GridModel {
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < cols; c++) {
       const current = cells[r][c] as CellType;
-      if (current !== 'empty') continue;
+      if (current !== 'default' && current !== 'gravel') continue;
       if (!passage.has(cellKey({ row: r, col: c }))) {
         cells[r][c] = 'wall';
       }

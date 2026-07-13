@@ -2,10 +2,12 @@ import { useState, useCallback } from 'react';
 import { CellPosition, EditMode, GridModel } from '../types';
 import {
   createGrid,
-  toggleWall,
+  setWall,
+  setGravel,
+  setDefault,
   setStart,
   setGoal,
-  clearWalls,
+  clearAll,
   resetGrid,
 } from '../grid/gridModel';
 
@@ -18,7 +20,11 @@ export function useGrid(rows: number, cols: number) {
       setGrid((prev) => {
         switch (mode) {
           case 'wall':
-            return toggleWall(prev, pos);
+            return setWall(prev, pos);
+          case 'gravel':
+            return setGravel(prev, pos);
+          case 'default':
+            return setDefault(prev, pos);
           case 'start':
             return setStart(prev, pos);
           case 'goal':
@@ -31,8 +37,8 @@ export function useGrid(rows: number, cols: number) {
     [mode]
   );
 
-  const handleClearWalls = useCallback(() => {
-    setGrid((prev) => clearWalls(prev));
+  const handleClearAll = useCallback(() => {
+    setGrid((prev) => clearAll(prev));
   }, []);
 
   const handleReset = useCallback(() => {
@@ -45,7 +51,7 @@ export function useGrid(rows: number, cols: number) {
     mode,
     setMode,
     handleCellClick,
-    handleClearWalls,
+    handleClearAll,
     handleReset,
   };
 }

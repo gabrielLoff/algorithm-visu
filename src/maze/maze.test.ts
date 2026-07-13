@@ -20,10 +20,10 @@ function gridHasPath(grid: ReturnType<typeof createGrid>): boolean {
     if (current.row === grid.goal.row && current.col === grid.goal.col) return true;
 
     for (const n of getNeighbors(grid, current)) {
-      const key = `${n.row},${n.col}`;
+      const key = `${n.pos.row},${n.pos.col}`;
       if (!visited.has(key)) {
         visited.add(key);
-        queue.push(n);
+        queue.push(n.pos);
       }
     }
   }

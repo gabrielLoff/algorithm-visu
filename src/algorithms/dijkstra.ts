@@ -48,9 +48,9 @@ export function* dijkstra(grid: GridModel): AlgorithmGenerator {
 
     const neighbors = getNeighbors(grid, minNode);
     for (const n of neighbors) {
-      const nKey = cellKey(n);
+      const nKey = cellKey(n.pos);
       if (!unvisited.has(nKey)) continue;
-      const alt = minDist + 1;
+      const alt = minDist + n.cost;
       if (alt < (dist.get(nKey) ?? Infinity)) {
         dist.set(nKey, alt);
         cameFrom.set(nKey, minNode);
