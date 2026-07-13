@@ -12,6 +12,10 @@ npm run test:watch # vitest (watch mode)
 
 No linter or formatter is configured.
 
+## Workflow
+
+🚨 STOP — read `.opencode/rules.md` before touching any file.
+
 ## Stack
 
 - **Vite 6** + **React 18** + **TypeScript 5.6**
