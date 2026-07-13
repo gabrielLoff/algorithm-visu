@@ -3,6 +3,12 @@ import { getAlgorithms } from '../algorithms';
 import { getMazes } from '../maze';
 import styles from './Toolbar.module.css';
 
+const MODE_LABELS: Record<EditMode, string> = {
+  wall: 'Wall',
+  start: 'Start',
+  goal: 'Goal',
+};
+
 interface ToolbarProps {
   selectedAlgorithm: string;
   onAlgorithmChange: (name: string) => void;
@@ -75,14 +81,14 @@ export function Toolbar({
       <div className={styles.section}>
         <label className={styles.label}>Mode</label>
         <div className={styles.modeGroup}>
-          {(['wall', 'start', 'goal'] as EditMode[]).map((m) => (
+          {(Object.keys(MODE_LABELS) as EditMode[]).map((m) => (
             <button
               key={m}
               className={`${styles.modeBtn} ${mode === m ? styles.active : ''}`}
               onClick={() => onModeChange(m)}
               disabled={isAnimating}
             >
-              {m.charAt(0).toUpperCase() + m.slice(1)}
+              {MODE_LABELS[m]}
             </button>
           ))}
         </div>

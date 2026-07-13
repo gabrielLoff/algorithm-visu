@@ -20,6 +20,8 @@ export default function App() {
   const [selectedMaze, setSelectedMaze] = useState(getMazes()[0].name);
 
   const algorithmInfo: AlgorithmInfo | null = getAlgorithm(selectedAlgo) ?? null;
+  // Only show algorithm info after the user has clicked Run
+  const activeInfo = animation.algorithmName ? algorithmInfo : null;
 
   const handleRun = useCallback(() => {
     const algo = getAlgorithm(selectedAlgo);
@@ -78,8 +80,7 @@ export default function App() {
       />
       <InfoPanel
         step={animation.currentStep}
-        algorithmInfo={animation.algorithmName ? algorithmInfo : null}
-        isDone={animation.isDone}
+        algorithmInfo={activeInfo}
         hasAlgorithm={animation.steps.length > 0}
       />
     </div>

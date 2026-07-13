@@ -1,21 +1,21 @@
 import { AlgorithmStep, AlgorithmInfo } from '../types';
+import { COLORS } from '../constants/colors';
 import styles from './InfoPanel.module.css';
 
 interface InfoPanelProps {
   step: AlgorithmStep | null;
   algorithmInfo: AlgorithmInfo | null;
-  isDone: boolean;
   hasAlgorithm: boolean;
 }
 
 const LEGEND_ITEMS = [
-  { color: '#22c55e', label: 'Start' },
-  { color: '#ef4444', label: 'Goal' },
-  { color: '#374151', label: 'Wall' },
-  { color: 'rgba(103, 232, 249, 0.4)', label: 'Visited' },
-  { color: 'rgba(253, 224, 71, 0.6)', label: 'Frontier' },
-  { color: '#a855f7', label: 'Current' },
-  { color: '#facc15', label: 'Path' },
+  { color: COLORS.start, label: 'Start' },
+  { color: COLORS.goal, label: 'Goal' },
+  { color: COLORS.wall, label: 'Wall' },
+  { color: COLORS.visited, label: 'Visited' },
+  { color: COLORS.frontier, label: 'Frontier' },
+  { color: COLORS.current, label: 'Current' },
+  { color: COLORS.path, label: 'Path' },
 ];
 
 function getStatus(step: AlgorithmStep | null, hasAlgorithm: boolean): string {
