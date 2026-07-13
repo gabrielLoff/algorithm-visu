@@ -9,9 +9,10 @@ export function reconstructPath(
   let key = cellKey(current);
   while (cameFrom.has(key)) {
     const prev = cameFrom.get(key)!;
-    path.unshift(prev);
+    path.push(prev);
     key = cellKey(prev);
   }
+  path.reverse();
   return path;
 }
 

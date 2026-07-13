@@ -1,5 +1,5 @@
 import { GridModel, CellPosition, CellType } from '../types';
-import { DIRECTIONS, pathExists } from '../grid/gridUtils';
+import { DIRECTIONS, pathExists, cellKey } from '../grid/gridUtils';
 
 export function ensureSolvable(grid: GridModel): GridModel {
   const { start, goal } = grid;
@@ -10,7 +10,7 @@ export function ensureSolvable(grid: GridModel): GridModel {
   const queue: CellPosition[] = [start];
   const cameFrom = new Map<string, CellPosition>();
   const visited = new Set<string>();
-  const startKey = `${start.row},${start.col}`;
+  const startKey = cellKey(start);
   visited.add(startKey);
 
   let found = false;
@@ -20,7 +20,7 @@ export function ensureSolvable(grid: GridModel): GridModel {
       const nr = current.row + dir.row;
       const nc = current.col + dir.col;
       if (nr < 0 || nr >= grid.rows || nc < 0 || nc >= grid.cols) continue;
-      const nKey = `${nr},${nc}`;
+      const nKey = cellKey({ row: nr, col: nc });
       if (visited.has(nKey)) continue;
       visited.add(nKey);
       cameFrom.set(nKey, current);
@@ -36,7 +36,7 @@ export function ensureSolvable(grid: GridModel): GridModel {
 
   const cells = grid.cells.map((row) => [...row]);
 
-  let key = `${goal.row},${goal.col}`;
+  let key = cellKey(goal);
   while (key !== startKey) {
     const pos = cameFrom.get(key);
     if (!pos) break;
@@ -44,7 +44,7 @@ export function ensureSolvable(grid: GridModel): GridModel {
     if (current === 'wall') {
       cells[pos.row][pos.col] = 'default';
     }
-    key = `${pos.row},${pos.col}`;
+    key = cellKey(pos);
   }
 
   return { ...grid, cells };
