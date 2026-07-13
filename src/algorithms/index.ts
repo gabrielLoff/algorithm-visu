@@ -1,4 +1,5 @@
-import { AlgorithmInfo } from '../types';
+import { AlgorithmInfo, GridModel } from '../types';
+import { hasGravel } from '../grid/gridUtils';
 import { astar } from './astar';
 import { dijkstra } from './dijkstra';
 import { bfs } from './bfs';
@@ -10,28 +11,28 @@ const algorithms: AlgorithmInfo[] = [
     fn: astar,
     description: 'A* Search — uses heuristic to guide search',
     weighted: true,
-    guaranteesShortest: true,
+    guaranteesShortest: () => true,
   },
   {
     name: 'Dijkstra',
     fn: dijkstra,
     description: "Dijkstra's Algorithm — guaranteed shortest path",
     weighted: true,
-    guaranteesShortest: true,
+    guaranteesShortest: () => true,
   },
   {
     name: 'BFS',
     fn: bfs,
     description: 'Breadth-First Search — explores level by level',
     weighted: false,
-    guaranteesShortest: true,
+    guaranteesShortest: (grid: GridModel) => !hasGravel(grid),
   },
   {
     name: 'DFS',
     fn: dfs,
     description: 'Depth-First Search — explores deep paths first',
     weighted: false,
-    guaranteesShortest: false,
+    guaranteesShortest: () => false,
   },
 ];
 

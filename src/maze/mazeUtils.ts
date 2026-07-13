@@ -57,7 +57,7 @@ export function ensureSolvable(grid: GridModel): GridModel {
     if (!pos) break;
     const current = cells[pos.row][pos.col] as CellType;
     if (current === 'wall') {
-      cells[pos.row][pos.col] = 'empty';
+      cells[pos.row][pos.col] = 'default';
     }
     key = `${pos.row},${pos.col}`;
   }

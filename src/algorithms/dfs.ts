@@ -24,11 +24,11 @@ export function* dfs(grid: GridModel): AlgorithmGenerator {
 
     const neighbors = getNeighbors(grid, current);
     for (const n of neighbors) {
-      const nKey = cellKey(n);
+      const nKey = cellKey(n.pos);
       if (!explored.has(nKey)) {
         explored.add(nKey);
         cameFrom.set(nKey, current);
-        stack.push(n);
+        stack.push(n.pos);
       }
     }
 

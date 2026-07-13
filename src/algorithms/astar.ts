@@ -15,7 +15,7 @@ export function* astar(grid: GridModel): AlgorithmGenerator {
   const fScore = new Map<string, number>();
   const cameFrom = new Map<string, CellPosition>();
   const openSet: AStarNode[] = [];
-  const openSetKeys = new Set<string>();
+  const closed = new Set<string>();
 
   const startKey = cellKey(grid.start);
 
@@ -23,7 +23,6 @@ export function* astar(grid: GridModel): AlgorithmGenerator {
   fScore.set(startKey, manhattan(grid.start, grid.goal));
 
   openSet.push({ pos: grid.start, g: 0, f: fScore.get(startKey)! });
-  openSetKeys.add(startKey);
 
   yield { frontier: [grid.start], visited: [], current: null, path: null, done: false };
 
@@ -31,7 +30,9 @@ export function* astar(grid: GridModel): AlgorithmGenerator {
     openSet.sort((a, b) => a.f - b.f);
     const current = openSet.shift()!;
     const currentKey = cellKey(current.pos);
-    openSetKeys.delete(currentKey);
+
+    if (closed.has(currentKey)) continue;
+    closed.add(currentKey);
 
     if (current.pos.row === grid.goal.row && current.pos.col === grid.goal.col) {
       const path = reconstructPath(cameFrom, current.pos);
@@ -41,21 +42,18 @@ export function* astar(grid: GridModel): AlgorithmGenerator {
 
     const neighbors = getNeighbors(grid, current.pos);
     for (const n of neighbors) {
-      const nKey = cellKey(n);
-      const tentG = current.g + 1;
+      const nKey = cellKey(n.pos);
+      const tentG = current.g + n.cost;
       if (tentG < (gScore.get(nKey) ?? Infinity)) {
         cameFrom.set(nKey, current.pos);
         gScore.set(nKey, tentG);
-        fScore.set(nKey, tentG + manhattan(n, grid.goal!));
-        if (!openSetKeys.has(nKey)) {
-          openSet.push({ pos: n, g: tentG, f: fScore.get(nKey)! });
-          openSetKeys.add(nKey);
-        }
+        fScore.set(nKey, tentG + manhattan(n.pos, grid.goal!));
+        openSet.push({ pos: n.pos, g: tentG, f: fScore.get(nKey)! });
       }
     }
 
-    const exploredKeys = new Set(cameFrom.keys());
-    const { frontier, visited } = computeDisplayLists(exploredKeys, openSetKeys, currentKey);
+    const frontierKeys = new Set(openSet.map((n) => cellKey(n.pos)));
+    const { frontier, visited } = computeDisplayLists(closed, frontierKeys, currentKey);
 
     yield { frontier, visited, current: current.pos, path: null, done: false };
   }

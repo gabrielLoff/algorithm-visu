@@ -1,4 +1,4 @@
-export type CellType = 'empty' | 'wall' | 'start' | 'goal';
+export type CellType = 'default' | 'wall' | 'start' | 'goal' | 'gravel';
 
 export interface CellPosition {
   row: number;
@@ -30,7 +30,7 @@ export interface AlgorithmInfo {
   fn: AlgorithmFn;
   description: string;
   weighted: boolean;
-  guaranteesShortest: boolean;
+  guaranteesShortest: (grid: GridModel) => boolean;
 }
 
-export type EditMode = 'wall' | 'start' | 'goal';
+export type EditMode = 'wall' | 'start' | 'goal' | 'gravel' | 'default';

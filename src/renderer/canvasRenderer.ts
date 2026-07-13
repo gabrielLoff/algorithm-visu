@@ -21,6 +21,7 @@ export function renderFrame(
   ctx.clearRect(0, 0, width, height);
 
   drawWalls(ctx, grid, cellSize);
+  drawGravel(ctx, grid, cellSize);
   drawGridLines(ctx, grid, cellSize);
 
   if (step) {
@@ -47,6 +48,22 @@ function drawWalls(
       const cell = grid.cells[r][c];
       if (cell === 'wall') {
         ctx.fillStyle = COLORS.wall;
+        ctx.fillRect(c * cellSize, r * cellSize, cellSize, cellSize);
+      }
+    }
+  }
+}
+
+function drawGravel(
+  ctx: CanvasRenderingContext2D,
+  grid: GridModel,
+  cellSize: number
+): void {
+  for (let r = 0; r < grid.rows; r++) {
+    for (let c = 0; c < grid.cols; c++) {
+      const cell = grid.cells[r][c];
+      if (cell === 'gravel') {
+        ctx.fillStyle = COLORS.gravel;
         ctx.fillRect(c * cellSize, r * cellSize, cellSize, cellSize);
       }
     }

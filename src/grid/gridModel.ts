@@ -5,7 +5,7 @@ export function createGrid(rows: number, cols: number): GridModel {
   for (let r = 0; r < rows; r++) {
     cells[r] = [];
     for (let c = 0; c < cols; c++) {
-      cells[r][c] = 'empty';
+      cells[r][c] = 'default';
     }
   }
 
@@ -28,24 +28,31 @@ export function setCell(grid: GridModel, pos: CellPosition, type: CellType): Gri
   return { ...grid, cells };
 }
 
-export function toggleWall(grid: GridModel, pos: CellPosition): GridModel {
+export function setWall(grid: GridModel, pos: CellPosition): GridModel {
   const current = grid.cells[pos.row][pos.col];
-  if (current === 'wall') {
-    return setCell(grid, pos, 'empty');
-  }
-  if (current === 'empty') {
-    return setCell(grid, pos, 'wall');
-  }
-  return grid;
+  if (current === 'wall' || current === 'start' || current === 'goal') return grid;
+  return setCell(grid, pos, 'wall');
+}
+
+export function setGravel(grid: GridModel, pos: CellPosition): GridModel {
+  const current = grid.cells[pos.row][pos.col];
+  if (current === 'gravel' || current === 'start' || current === 'goal') return grid;
+  return setCell(grid, pos, 'gravel');
+}
+
+export function setDefault(grid: GridModel, pos: CellPosition): GridModel {
+  const current = grid.cells[pos.row][pos.col];
+  if (current === 'default' || current === 'start' || current === 'goal') return grid;
+  return setCell(grid, pos, 'default');
 }
 
 export function setStart(grid: GridModel, pos: CellPosition): GridModel {
   const current = grid.cells[pos.row][pos.col];
-  if (current === 'start' || current === 'wall') return grid;
+  if (current === 'start' || current === 'wall' || current === 'gravel') return grid;
 
   const cells = grid.cells.map((row) => [...row]);
   if (grid.start) {
-    cells[grid.start.row][grid.start.col] = 'empty';
+    cells[grid.start.row][grid.start.col] = 'default';
   }
   cells[pos.row][pos.col] = 'start';
   return { ...grid, cells, start: { ...pos } };
@@ -53,20 +60,20 @@ export function setStart(grid: GridModel, pos: CellPosition): GridModel {
 
 export function setGoal(grid: GridModel, pos: CellPosition): GridModel {
   const current = grid.cells[pos.row][pos.col];
-  if (current === 'goal' || current === 'wall') return grid;
+  if (current === 'goal' || current === 'wall' || current === 'gravel') return grid;
 
   const cells = grid.cells.map((row) => [...row]);
   if (grid.goal) {
-    cells[grid.goal.row][grid.goal.col] = 'empty';
+    cells[grid.goal.row][grid.goal.col] = 'default';
   }
   cells[pos.row][pos.col] = 'goal';
   return { ...grid, cells, goal: { ...pos } };
 }
 
-export function clearWalls(grid: GridModel): GridModel {
+export function clearAll(grid: GridModel): GridModel {
   const cells = grid.cells.map((row) =>
     row.map((cell) => {
-      if (cell === 'wall') return 'empty';
+      if (cell === 'wall' || cell === 'gravel') return 'default';
       return cell;
     })
   );

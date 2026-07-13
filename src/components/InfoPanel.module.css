@@ -65,3 +65,18 @@
   color: #9ca3af;
   font-size: 11px;
 }
+
+.warning {
+  color: #facc15;
+  font-size: 12px;
+  font-style: italic;
+}
+
+.guarantee {
+  color: #9ca3af;
+  font-size: 12px;
+}
+
+.guarantee strong {
+  color: #e5e7eb;
+}

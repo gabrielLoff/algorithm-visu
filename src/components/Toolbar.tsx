@@ -4,9 +4,11 @@ import { getMazes } from '../maze';
 import styles from './Toolbar.module.css';
 
 const MODE_LABELS: Record<EditMode, string> = {
-  wall: 'Wall',
   start: 'Start',
   goal: 'Goal',
+  wall: 'Wall',
+  gravel: 'Gravel',
+  default: 'Default',
 };
 
 interface ToolbarProps {
@@ -17,7 +19,7 @@ interface ToolbarProps {
   onGenerateMaze: () => void;
   mode: EditMode;
   onModeChange: (mode: EditMode) => void;
-  onClearWalls: () => void;
+  onClearAll: () => void;
   onReset: () => void;
   isAnimating: boolean;
 }
@@ -30,7 +32,7 @@ export function Toolbar({
   onGenerateMaze,
   mode,
   onModeChange,
-  onClearWalls,
+  onClearAll,
   onReset,
   isAnimating,
 }: ToolbarProps) {
@@ -97,10 +99,10 @@ export function Toolbar({
       <div className={styles.section}>
         <button
           className={styles.btn}
-          onClick={onClearWalls}
+          onClick={onClearAll}
           disabled={isAnimating}
         >
-          Clear Walls
+          Clear All
         </button>
         <button
           className={styles.btn}

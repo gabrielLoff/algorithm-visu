@@ -1,6 +1,7 @@
 export const COLORS = {
-  empty: '#f0f0f0',
+  default: '#f0f0f0',
   wall: '#374151',
+  gravel: '#d97706',
   start: '#22c55e',
   goal: '#ef4444',
   visited: 'rgba(103, 232, 249, 0.4)',

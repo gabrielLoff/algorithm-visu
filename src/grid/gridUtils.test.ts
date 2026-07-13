@@ -1,17 +1,39 @@
 import { describe, it, expect } from 'vitest';
-import { getNeighbors, manhattan, euclidean, cellKey, parseCellKey } from './gridUtils';
+import { getNeighbors, getCost, manhattan, euclidean, cellKey, parseCellKey } from './gridUtils';
 import { createGrid } from './gridModel';
 
 function smallGrid() {
   return createGrid(5, 5);
 }
 
+describe('getCost', () => {
+  it('returns 1 for default cells', () => {
+    expect(getCost('default')).toBe(1);
+  });
+
+  it('returns 1 for start cells', () => {
+    expect(getCost('start')).toBe(1);
+  });
+
+  it('returns 1 for goal cells', () => {
+    expect(getCost('goal')).toBe(1);
+  });
+
+  it('returns 2 for gravel cells', () => {
+    expect(getCost('gravel')).toBe(2);
+  });
+
+  it('returns 1 for wall cells (for completeness, though impassable)', () => {
+    expect(getCost('wall')).toBe(1);
+  });
+});
+
 describe('getNeighbors', () => {
   it('returns up to 4 walkable neighbors for a central cell', () => {
     const grid = smallGrid();
     const neighbors = getNeighbors(grid, { row: 2, col: 2 });
     expect(neighbors).toHaveLength(4);
-    const coords = neighbors.map((n) => `${n.row},${n.col}`).sort();
+    const coords = neighbors.map((n) => `${n.pos.row},${n.pos.col}`).sort();
     expect(coords).toEqual(['1,2', '2,1', '2,3', '3,2']);
   });
 
@@ -27,16 +49,47 @@ describe('getNeighbors', () => {
     const grid = createGrid(3, 3);
     grid.cells[1][1] = 'wall';
     const neighbors = getNeighbors(grid, { row: 0, col: 1 });
-    const coords = neighbors.map((n) => `${n.row},${n.col}`).sort();
+    const coords = neighbors.map((n) => `${n.pos.row},${n.pos.col}`).sort();
     expect(coords).toEqual(['0,0', '0,2']);
   });
 
   it('includes start and goal cells as walkable', () => {
     const grid = smallGrid();
     const neighbors = getNeighbors(grid, { row: 2, col: 2 });
-    const types = neighbors.map((n) => grid.cells[n.row][n.col]);
+    const types = neighbors.map((n) => grid.cells[n.pos.row][n.pos.col]);
     expect(types).toContain('start');
     expect(types).toContain('goal');
+  });
+
+  it('includes gravel cells as walkable', () => {
+    const grid = createGrid(3, 3);
+    grid.cells[0][1] = 'gravel';
+    const neighbors = getNeighbors(grid, { row: 0, col: 0 });
+    const hasGravel = neighbors.some(
+      (n) => grid.cells[n.pos.row][n.pos.col] === 'gravel'
+    );
+    expect(hasGravel).toBe(true);
+  });
+
+  it('returns cost of 1 for default cells neighboring', () => {
+    const grid = createGrid(3, 3);
+    const neighbors = getNeighbors(grid, { row: 1, col: 1 });
+    for (const n of neighbors) {
+      if (grid.cells[n.pos.row][n.pos.col] === 'default') {
+        expect(n.cost).toBe(1);
+      }
+    }
+  });
+
+  it('returns cost of 2 for gravel neighbors', () => {
+    const grid = createGrid(3, 3);
+    grid.cells[0][1] = 'gravel';
+    const neighbors = getNeighbors(grid, { row: 0, col: 0 });
+    const gravelNeighbor = neighbors.find(
+      (n) => grid.cells[n.pos.row][n.pos.col] === 'gravel'
+    );
+    expect(gravelNeighbor).toBeDefined();
+    expect(gravelNeighbor!.cost).toBe(2);
   });
 });
 

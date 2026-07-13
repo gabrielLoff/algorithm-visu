@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { createGrid, toggleWall } from '../grid/gridModel';
+import { createGrid, setWall, setGravel, setCell } from '../grid/gridModel';
+import { getCost } from '../grid/gridUtils';
+import { getAlgorithm } from './index';
 import { astar } from './astar';
 import { dijkstra } from './dijkstra';
 import { bfs } from './bfs';
@@ -22,8 +24,8 @@ function wallOffGoal(grid: GridModel): GridModel {
   let g = grid;
   for (const n of neighbors) {
     if (n.row >= 0 && n.row < grid.rows && n.col >= 0 && n.col < grid.cols) {
-      if (g.cells[n.row][n.col] === 'empty') {
-        g = toggleWall(g, n);
+      if (g.cells[n.row][n.col] === 'default') {
+        g = setWall(g, n);
       }
     }
   }
@@ -141,4 +143,86 @@ describe('algorithms', () => {
   testAlgorithm('Dijkstra', dijkstra, true);
   testAlgorithm('BFS', bfs, true);
   testAlgorithm('DFS', dfs, false);
+});
+
+function makeGravelGrid(): GridModel {
+  let grid = createGrid(5, 5);
+  grid = setCell(grid, grid.start!, 'default');
+  grid = setCell(grid, grid.goal!, 'default');
+  grid = setCell(grid, { row: 2, col: 0 }, 'start');
+  grid = setCell(grid, { row: 2, col: 4 }, 'goal');
+  grid = setGravel(grid, { row: 2, col: 1 });
+  grid = setGravel(grid, { row: 2, col: 2 });
+  grid = setGravel(grid, { row: 2, col: 3 });
+  return { ...grid, start: { row: 2, col: 0 }, goal: { row: 2, col: 4 } };
+}
+
+function pathCost(path: NonNullable<AlgorithmStep['path']>, grid: GridModel): number {
+  return path
+    .slice(1)
+    .reduce((sum, p) => sum + getCost(grid.cells[p.row][p.col]), 0);
+}
+
+describe('weighted pathfinding with gravel', () => {
+  it('A* avoids gravel when detour is cheaper', () => {
+    const grid = makeGravelGrid();
+    const steps = runAlgorithm(astar, grid);
+    const last = steps[steps.length - 1];
+    expect(last.path).not.toBeNull();
+    const cost = pathCost(last.path!, grid);
+    const directCost = 2 + 2 + 2 + 1;
+    expect(cost).toBeLessThan(directCost);
+  });
+
+  it('Dijkstra avoids gravel when detour is cheaper', () => {
+    const grid = makeGravelGrid();
+    const steps = runAlgorithm(dijkstra, grid);
+    const last = steps[steps.length - 1];
+    expect(last.path).not.toBeNull();
+    const cost = pathCost(last.path!, grid);
+    const directCost = 2 + 2 + 2 + 1;
+    expect(cost).toBeLessThan(directCost);
+  });
+
+  it('BFS ignores gravel costs and may take suboptimal path by cost', () => {
+    const grid = makeGravelGrid();
+    const steps = runAlgorithm(bfs, grid);
+    const last = steps[steps.length - 1];
+    expect(last.path).not.toBeNull();
+    const cost = pathCost(last.path!, grid);
+    const directCost = 2 + 2 + 2 + 1;
+    expect(cost).toBeGreaterThanOrEqual(directCost);
+  });
+});
+
+describe('algorithm registry guaranteesShortest', () => {
+  it('A* always guarantees shortest', () => {
+    const astarInfo = getAlgorithm('A*')!;
+    const grid = createGrid(5, 5);
+    expect(astarInfo.guaranteesShortest(grid)).toBe(true);
+  });
+
+  it('Dijkstra always guarantees shortest', () => {
+    const dijkstraInfo = getAlgorithm('Dijkstra')!;
+    const grid = createGrid(5, 5);
+    expect(dijkstraInfo.guaranteesShortest(grid)).toBe(true);
+  });
+
+  it('BFS guarantees shortest on grid without gravel', () => {
+    const bfsInfo = getAlgorithm('BFS')!;
+    const grid = createGrid(5, 5);
+    expect(bfsInfo.guaranteesShortest(grid)).toBe(true);
+  });
+
+  it('BFS does not guarantee shortest on grid with gravel', () => {
+    const bfsInfo = getAlgorithm('BFS')!;
+    const grid = makeGravelGrid();
+    expect(bfsInfo.guaranteesShortest(grid)).toBe(false);
+  });
+
+  it('DFS never guarantees shortest', () => {
+    const dfsInfo = getAlgorithm('DFS')!;
+    const grid = createGrid(5, 5);
+    expect(dfsInfo.guaranteesShortest(grid)).toBe(false);
+  });
 });
