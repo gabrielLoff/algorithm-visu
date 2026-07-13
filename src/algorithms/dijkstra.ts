@@ -1,16 +1,6 @@
 import { AlgorithmGenerator, CellPosition, GridModel } from '../types';
-import { getNeighbors } from '../grid/gridUtils';
-
-function reconstructPath(cameFrom: Map<string, CellPosition>, current: CellPosition): CellPosition[] {
-  const path: CellPosition[] = [current];
-  let key = `${current.row},${current.col}`;
-  while (cameFrom.has(key)) {
-    const prev = cameFrom.get(key)!;
-    path.unshift(prev);
-    key = `${prev.row},${prev.col}`;
-  }
-  return path;
-}
+import { getNeighbors, cellKey, parseCellKey } from '../grid/gridUtils';
+import { reconstructPath, computeDisplayLists } from './pathUtils';
 
 export function* dijkstra(grid: GridModel): AlgorithmGenerator {
   if (!grid.start || !grid.goal) return;
@@ -23,12 +13,12 @@ export function* dijkstra(grid: GridModel): AlgorithmGenerator {
   for (let r = 0; r < grid.rows; r++) {
     for (let c = 0; c < grid.cols; c++) {
       if (grid.cells[r][c] !== 'wall') {
-        unvisited.add(`${r},${c}`);
+        unvisited.add(cellKey({ row: r, col: c }));
       }
     }
   }
 
-  const startKey = `${grid.start.row},${grid.start.col}`;
+  const startKey = cellKey(grid.start);
   dist.set(startKey, 0);
   frontierSet.add(startKey);
 
@@ -41,13 +31,12 @@ export function* dijkstra(grid: GridModel): AlgorithmGenerator {
       const d = dist.get(key) ?? Infinity;
       if (d < minDist) {
         minDist = d;
-        const [r, c] = key.split(',').map(Number);
-        minNode = { row: r, col: c };
+        minNode = parseCellKey(key);
       }
     }
 
     if (!minNode) break;
-    const currentKey = `${minNode.row},${minNode.col}`;
+    const currentKey = cellKey(minNode);
     frontierSet.delete(currentKey);
     unvisited.delete(currentKey);
 
@@ -59,7 +48,7 @@ export function* dijkstra(grid: GridModel): AlgorithmGenerator {
 
     const neighbors = getNeighbors(grid, minNode);
     for (const n of neighbors) {
-      const nKey = `${n.row},${n.col}`;
+      const nKey = cellKey(n);
       if (!unvisited.has(nKey)) continue;
       const alt = minDist + 1;
       if (alt < (dist.get(nKey) ?? Infinity)) {
@@ -69,19 +58,8 @@ export function* dijkstra(grid: GridModel): AlgorithmGenerator {
       }
     }
 
-    const frontier: CellPosition[] = [];
-    for (const key of frontierSet) {
-      const [r, c] = key.split(',').map(Number);
-      frontier.push({ row: r, col: c });
-    }
-
-    const visited: CellPosition[] = [];
-    for (const [key] of cameFrom) {
-      if (!frontierSet.has(key) && unvisited.has(key) === false) {
-        const [r, c] = key.split(',').map(Number);
-        visited.push({ row: r, col: c });
-      }
-    }
+    const exploredKeys = new Set(cameFrom.keys());
+    const { frontier, visited } = computeDisplayLists(exploredKeys, frontierSet, currentKey);
 
     yield { frontier, visited, current: minNode, path: null, done: false };
   }

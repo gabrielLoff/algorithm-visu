@@ -1,21 +1,11 @@
 import { AlgorithmGenerator, CellPosition, GridModel } from '../types';
-import { getNeighbors, manhattan } from '../grid/gridUtils';
+import { getNeighbors, manhattan, cellKey } from '../grid/gridUtils';
+import { reconstructPath, computeDisplayLists } from './pathUtils';
 
 interface AStarNode {
   pos: CellPosition;
   g: number;
   f: number;
-}
-
-function reconstructPath(cameFrom: Map<string, CellPosition>, current: CellPosition): CellPosition[] {
-  const path: CellPosition[] = [current];
-  let key = `${current.row},${current.col}`;
-  while (cameFrom.has(key)) {
-    const prev = cameFrom.get(key)!;
-    path.unshift(prev);
-    key = `${prev.row},${prev.col}`;
-  }
-  return path;
 }
 
 export function* astar(grid: GridModel): AlgorithmGenerator {
@@ -27,7 +17,7 @@ export function* astar(grid: GridModel): AlgorithmGenerator {
   const openSet: AStarNode[] = [];
   const openSetKeys = new Set<string>();
 
-  const startKey = `${grid.start.row},${grid.start.col}`;
+  const startKey = cellKey(grid.start);
 
   gScore.set(startKey, 0);
   fScore.set(startKey, manhattan(grid.start, grid.goal));
@@ -40,7 +30,7 @@ export function* astar(grid: GridModel): AlgorithmGenerator {
   while (openSet.length > 0) {
     openSet.sort((a, b) => a.f - b.f);
     const current = openSet.shift()!;
-    const currentKey = `${current.pos.row},${current.pos.col}`;
+    const currentKey = cellKey(current.pos);
     openSetKeys.delete(currentKey);
 
     if (current.pos.row === grid.goal.row && current.pos.col === grid.goal.col) {
@@ -51,7 +41,7 @@ export function* astar(grid: GridModel): AlgorithmGenerator {
 
     const neighbors = getNeighbors(grid, current.pos);
     for (const n of neighbors) {
-      const nKey = `${n.row},${n.col}`;
+      const nKey = cellKey(n);
       const tentG = current.g + 1;
       if (tentG < (gScore.get(nKey) ?? Infinity)) {
         cameFrom.set(nKey, current.pos);
@@ -64,16 +54,10 @@ export function* astar(grid: GridModel): AlgorithmGenerator {
       }
     }
 
-    const frontier = openSet.map((n) => n.pos);
-    const currentVisited: CellPosition[] = [];
-    for (const [key] of cameFrom) {
-      const [r, c] = key.split(',').map(Number);
-      if (key !== currentKey && !openSetKeys.has(key)) {
-        currentVisited.push({ row: r, col: c });
-      }
-    }
+    const exploredKeys = new Set(cameFrom.keys());
+    const { frontier, visited } = computeDisplayLists(exploredKeys, openSetKeys, currentKey);
 
-    yield { frontier, visited: currentVisited, current: current.pos, path: null, done: false };
+    yield { frontier, visited, current: current.pos, path: null, done: false };
   }
 
   yield { frontier: [], visited: [], current: null, path: null, done: true };

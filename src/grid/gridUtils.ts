@@ -1,5 +1,14 @@
 import { CellPosition, GridModel } from '../types';
 
+export function cellKey(pos: CellPosition): string {
+  return `${pos.row},${pos.col}`;
+}
+
+export function parseCellKey(key: string): CellPosition {
+  const [r, c] = key.split(',').map(Number);
+  return { row: r, col: c };
+}
+
 const DIRECTIONS: CellPosition[] = [
   { row: -1, col: 0 },
   { row: 1, col: 0 },

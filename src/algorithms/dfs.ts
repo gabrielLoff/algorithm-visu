@@ -1,29 +1,20 @@
 import { AlgorithmGenerator, CellPosition, GridModel } from '../types';
-import { getNeighbors } from '../grid/gridUtils';
-
-function reconstructPath(cameFrom: Map<string, CellPosition>, current: CellPosition): CellPosition[] {
-  const path: CellPosition[] = [current];
-  let key = `${current.row},${current.col}`;
-  while (cameFrom.has(key)) {
-    const prev = cameFrom.get(key)!;
-    path.unshift(prev);
-    key = `${prev.row},${prev.col}`;
-  }
-  return path;
-}
+import { getNeighbors, cellKey } from '../grid/gridUtils';
+import { reconstructPath, computeDisplayLists } from './pathUtils';
 
 export function* dfs(grid: GridModel): AlgorithmGenerator {
   if (!grid.start || !grid.goal) return;
 
   const stack: CellPosition[] = [grid.start];
-  const visited = new Set<string>();
+  const explored = new Set<string>();
   const cameFrom = new Map<string, CellPosition>();
-  visited.add(`${grid.start.row},${grid.start.col}`);
+  explored.add(cellKey(grid.start));
 
   yield { frontier: [grid.start], visited: [], current: null, path: null, done: false };
 
   while (stack.length > 0) {
     const current = stack.pop()!;
+    const currentKey = cellKey(current);
 
     if (current.row === grid.goal.row && current.col === grid.goal.col) {
       const path = reconstructPath(cameFrom, current);
@@ -33,23 +24,18 @@ export function* dfs(grid: GridModel): AlgorithmGenerator {
 
     const neighbors = getNeighbors(grid, current);
     for (const n of neighbors) {
-      const nKey = `${n.row},${n.col}`;
-      if (!visited.has(nKey)) {
-        visited.add(nKey);
+      const nKey = cellKey(n);
+      if (!explored.has(nKey)) {
+        explored.add(nKey);
         cameFrom.set(nKey, current);
         stack.push(n);
       }
     }
 
-    const visitedList: CellPosition[] = [];
-    for (const key of visited) {
-      const [r, c] = key.split(',').map(Number);
-      if (!stack.some((s) => s.row === r && s.col === c)) {
-        visitedList.push({ row: r, col: c });
-      }
-    }
+    const frontierKeys = new Set(stack.map(cellKey));
+    const { frontier, visited } = computeDisplayLists(explored, frontierKeys, currentKey);
 
-    yield { frontier: [...stack], visited: visitedList, current, path: null, done: false };
+    yield { frontier, visited, current, path: null, done: false };
   }
 
   yield { frontier: [], visited: [], current: null, path: null, done: true };
