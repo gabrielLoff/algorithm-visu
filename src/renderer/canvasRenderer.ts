@@ -175,9 +175,3 @@ function drawStartGoal(
   }
 }
 
-export function getCanvasSize(grid: GridModel, cellSize: number): { width: number; height: number } {
-  return {
-    width: grid.cols * cellSize,
-    height: grid.rows * cellSize,
-  };
-}

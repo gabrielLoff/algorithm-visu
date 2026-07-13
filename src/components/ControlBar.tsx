@@ -1,4 +1,5 @@
 import styles from './ControlBar.module.css';
+import { RunIcon, StepBackwardIcon, PauseIcon, PlayIcon, StepForwardIcon } from './icons';
 
 interface ControlBarProps {
   isPlaying: boolean;
@@ -33,9 +34,7 @@ export function ControlBar({
         disabled={isPlaying}
         title="Run algorithm"
       >
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <polygon points="5,3 19,12 5,21" />
-        </svg>
+        <RunIcon />
         Run
       </button>
 
@@ -45,18 +44,12 @@ export function ControlBar({
         disabled={!hasAlgorithm || isPlaying}
         title="Step backward"
       >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <polygon points="19,20 9,12 19,4" />
-          <line x1="5" y1="19" x2="5" y2="5" />
-        </svg>
+        <StepBackwardIcon />
       </button>
 
       {isPlaying ? (
         <button className={styles.btn} onClick={onPause} title="Pause">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-            <rect x="6" y="4" width="4" height="16" rx="1" />
-            <rect x="14" y="4" width="4" height="16" rx="1" />
-          </svg>
+          <PauseIcon />
         </button>
       ) : (
         <button
@@ -65,9 +58,7 @@ export function ControlBar({
           disabled={!hasAlgorithm || isDone}
           title="Play"
         >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-            <polygon points="8,5 19,12 8,19" />
-          </svg>
+          <PlayIcon />
         </button>
       )}
 
@@ -77,10 +68,7 @@ export function ControlBar({
         disabled={!hasAlgorithm || isPlaying || isDone}
         title="Step forward"
       >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <polygon points="5,4 15,12 5,20" />
-          <line x1="19" y1="5" x2="19" y2="19" />
-        </svg>
+        <StepForwardIcon />
       </button>
 
       <div className={styles.speedControl}>

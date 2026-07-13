@@ -3,13 +3,13 @@ import { getAlgorithms } from '../algorithms';
 import { getMazes } from '../maze';
 import styles from './Toolbar.module.css';
 
-const MODE_LABELS: Record<EditMode, string> = {
-  start: 'Start',
-  goal: 'Goal',
-  wall: 'Wall',
-  gravel: 'Gravel',
-  default: 'Default',
-};
+const EDIT_MODES: { value: EditMode; label: string }[] = [
+  { value: 'start', label: 'Start' },
+  { value: 'goal', label: 'Goal' },
+  { value: 'wall', label: 'Wall' },
+  { value: 'gravel', label: 'Gravel' },
+  { value: 'default', label: 'Default' },
+];
 
 interface ToolbarProps {
   selectedAlgorithm: string;
@@ -83,14 +83,14 @@ export function Toolbar({
       <div className={styles.section}>
         <label className={styles.label}>Mode</label>
         <div className={styles.modeGroup}>
-          {(Object.keys(MODE_LABELS) as EditMode[]).map((m) => (
+          {EDIT_MODES.map((m) => (
             <button
-              key={m}
-              className={`${styles.modeBtn} ${mode === m ? styles.active : ''}`}
-              onClick={() => onModeChange(m)}
+              key={m.value}
+              className={`${styles.modeBtn} ${mode === m.value ? styles.active : ''}`}
+              onClick={() => onModeChange(m.value)}
               disabled={isAnimating}
             >
-              {MODE_LABELS[m]}
+              {m.label}
             </button>
           ))}
         </div>

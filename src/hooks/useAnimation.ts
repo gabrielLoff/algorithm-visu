@@ -3,6 +3,7 @@ import { AlgorithmFn, AlgorithmStep, GridModel } from '../types';
 
 const MIN_DELAY_MS = 10;
 const MAX_DELAY_MS = 200;
+/** Maps speed slider (1–100) to interval delay (~198ms → ~10ms) */
 const SPEED_SCALE = 1.9;
 
 export function useAnimation(grid: GridModel) {
