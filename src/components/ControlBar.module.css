@@ -1,0 +1,53 @@
+.controlBar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: #1f2937;
+  border-top: 1px solid #374151;
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid #374151;
+  background: #111827;
+  color: #e5e7eb;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.btn:hover:not(:disabled) {
+  background: #374151;
+  border-color: #4b5563;
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.speedControl {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 16px;
+}
+
+.label {
+  color: #9ca3af;
+  font-size: 13px;
+  font-weight: 500;
+  min-width: 70px;
+}
+
+.slider {
+  width: 100px;
+  accent-color: #6366f1;
+  cursor: pointer;
+}
