@@ -42,9 +42,9 @@ useGrid (grid state + edit mode)     useAnimation (step playback)
 
 | Directory | Purpose |
 |---|---|
-| `src/types/` | Shared types: `CellType`, `GridModel`, `AlgorithmStep`, `AlgorithmGenerator`, `AlgorithmFn`, `AlgorithmInfo`, `EditMode` |
-| `src/grid/` | `gridModel.ts` — pure immutable grid operations. `gridUtils.ts` — `getNeighbors` (4-directional), `manhattan`, `euclidean` |
-| `src/algorithms/` | Generator functions: `astar`, `dijkstra`, `bfs`, `dfs`. Registry in `index.ts` via `getAlgorithm(name)` |
+| `src/types/` | Shared types: `CellType` (`'default' \| 'wall' \| 'start' \| 'goal' \| 'gravel'`), `GridModel`, `AlgorithmStep`, `AlgorithmGenerator`, `AlgorithmFn`, `AlgorithmInfo`, `EditMode` |
+| `src/grid/` | `gridModel.ts` — pure immutable grid operations (setWall, setGravel, setDefault, setStart, setGoal, clearAll). `gridUtils.ts` — `getNeighbors` (returns `{ pos, cost }[]`), `getCost`, `pathExists`, `hasGravel`, `manhattan`, `euclidean`, `cellKey` |
+| `src/algorithms/` | Generator functions: `astar`, `dijkstra`, `bfs`, `dfs`. Shared `search.ts` parameterizes BFS/DFS via frontier strategy. Registry in `index.ts` via `getAlgorithm(name)` |
 | `src/renderer/` | `canvasRenderer.ts` — `renderFrame(ctx, grid, step, cellSize)` draws one frame |
 | `src/hooks/` | `useGrid(rows, cols)` and `useAnimation(grid)` |
 
@@ -64,13 +64,13 @@ Every algorithm is a **generator function** `(grid: GridModel) => AlgorithmGener
 
 ## Grid conventions
 
-- **Immutable pattern**: grid functions (`setCell`, `toggleWall`, etc.) return a new `GridModel` — always use the returned value.
+- **Immutable pattern**: grid functions (`setCell`, `setWall`, `setGravel`, `setDefault`, etc.) return a new `GridModel` — always use the returned value.
 - **Cell keys**: algorithms use string keys `"${row},${col}"` for Maps/Sets.
 - **Default grid**: 25 rows × 50 cols, defined as constants in `App.tsx` (not configurable externally).
 - **Cell size**: 22px, defined in `GridCanvas.tsx` (not derived from container).
 - **Initial start/goal**: placed at `(midRow, cols/4)` and `(midRow, 3*cols/4)` in `createGrid()`.
-- **`start`/`goal` cells cannot be walls** — `toggleWall` only operates on `'empty'` ↔ `'wall'`.
-- **`setStart`/`setGoal` refuse walls** — they return the grid unchanged if target is a wall.
+- **`start`/`goal` cells cannot become walls or gravel** — `setWall`, `setGravel`, and `setDefault` refuse start and goal positions.
+- **`setStart`/`setGoal` refuse walls and gravel** — they return the grid unchanged if target is a wall or gravel.
 
 ## Rendering order matters
 
@@ -104,6 +104,18 @@ This project follows **GitHub Flow**. Every agent must adhere to these rules whe
 - **Squash merge** — merge via squash so each PR produces one clean commit on `main`.
 - **Commit format** — use [Conventional Commits](https://www.conventionalcommits.org/) for the squash title: `feat:`, `fix:`, `chore:`, `refactor:`, `test:`, etc.
 - **`main` is protected** — requires a PR; direct pushes are rejected.
+
+### Parallel work for independent tickets
+
+When multiple tickets touch disjoint files with no blocking dependencies, use `git worktree` to work on them simultaneously:
+
+```bash
+git worktree add ../<dir> -b <branch-name> main
+# ... implement in that worktree ...
+git worktree remove ../<dir>
+```
+
+All worktrees share the same `.git` directory, so each can commit, push, and open PRs independently. After all PRs merge, run `git pull` on main and `git worktree prune` to clean up stale entries.
 
 ## Agent skills
 
