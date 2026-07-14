@@ -16,7 +16,7 @@ export function renderFrame(
   ctx: CanvasRenderingContext2D,
   grid: GridModel,
   step: PathfindingAlgorithmStep | null,
-  cellSize: number
+  cellSize: number,
 ): void {
   const width = grid.cols * cellSize;
   const height = grid.rows * cellSize;
@@ -46,7 +46,7 @@ function fillCellsOfType(
   grid: GridModel,
   cellSize: number,
   type: CellType,
-  color: string
+  color: string,
 ): void {
   ctx.fillStyle = color;
   for (let r = 0; r < grid.rows; r++) {
@@ -58,11 +58,7 @@ function fillCellsOfType(
   }
 }
 
-function drawGridLines(
-  ctx: CanvasRenderingContext2D,
-  grid: GridModel,
-  cellSize: number
-): void {
+function drawGridLines(ctx: CanvasRenderingContext2D, grid: GridModel, cellSize: number): void {
   ctx.strokeStyle = COLORS.gridLine;
   ctx.lineWidth = 0.5;
 
@@ -84,7 +80,7 @@ function drawGridLines(
 function drawVisitedCells(
   ctx: CanvasRenderingContext2D,
   visited: CellPosition[],
-  cellSize: number
+  cellSize: number,
 ): void {
   ctx.fillStyle = COLORS.visited;
   for (const pos of visited) {
@@ -95,7 +91,7 @@ function drawVisitedCells(
 function drawFrontierCells(
   ctx: CanvasRenderingContext2D,
   frontier: CellPosition[],
-  cellSize: number
+  cellSize: number,
 ): void {
   ctx.fillStyle = COLORS.frontier;
   for (const pos of frontier) {
@@ -106,17 +102,13 @@ function drawFrontierCells(
 function drawCurrentCell(
   ctx: CanvasRenderingContext2D,
   current: CellPosition,
-  cellSize: number
+  cellSize: number,
 ): void {
   ctx.fillStyle = COLORS.current;
   ctx.fillRect(current.col * cellSize, current.row * cellSize, cellSize, cellSize);
 }
 
-function drawPath(
-  ctx: CanvasRenderingContext2D,
-  path: CellPosition[],
-  cellSize: number
-): void {
+function drawPath(ctx: CanvasRenderingContext2D, path: CellPosition[], cellSize: number): void {
   if (path.length === 0) return;
 
   ctx.strokeStyle = COLORS.path;
@@ -126,26 +118,16 @@ function drawPath(
 
   ctx.beginPath();
   const first = path[0];
-  ctx.moveTo(
-    first.col * cellSize + cellSize / 2,
-    first.row * cellSize + cellSize / 2
-  );
+  ctx.moveTo(first.col * cellSize + cellSize / 2, first.row * cellSize + cellSize / 2);
 
   for (let i = 1; i < path.length; i++) {
     const p = path[i];
-    ctx.lineTo(
-      p.col * cellSize + cellSize / 2,
-      p.row * cellSize + cellSize / 2
-    );
+    ctx.lineTo(p.col * cellSize + cellSize / 2, p.row * cellSize + cellSize / 2);
   }
   ctx.stroke();
 }
 
-function drawStartGoal(
-  ctx: CanvasRenderingContext2D,
-  grid: GridModel,
-  cellSize: number
-): void {
+function drawStartGoal(ctx: CanvasRenderingContext2D, grid: GridModel, cellSize: number): void {
   const radius = cellSize * MARKER_RADIUS_RATIO;
 
   if (grid.start) {
@@ -156,7 +138,7 @@ function drawStartGoal(
       grid.start.row * cellSize + cellSize / 2,
       radius,
       0,
-      Math.PI * 2
+      Math.PI * 2,
     );
     ctx.fill();
   }
@@ -169,9 +151,8 @@ function drawStartGoal(
       grid.goal.row * cellSize + cellSize / 2,
       radius,
       0,
-      Math.PI * 2
+      Math.PI * 2,
     );
     ctx.fill();
   }
 }
-

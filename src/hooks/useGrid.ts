@@ -34,7 +34,7 @@ export function useGrid(rows: number, cols: number) {
         }
       });
     },
-    [mode]
+    [mode],
   );
 
   const handleClearAll = useCallback(() => {

@@ -51,11 +51,7 @@ export function SortingToolbar({
       </div>
 
       <div className={styles.section}>
-        <button
-          className={styles.btn}
-          onClick={onRandomize}
-          disabled={isAnimating}
-        >
+        <button className={styles.btn} onClick={onRandomize} disabled={isAnimating}>
           Randomize
         </button>
       </div>

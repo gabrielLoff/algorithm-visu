@@ -3,7 +3,7 @@ import { cellKey, parseCellKey } from '../../grid/gridUtils';
 
 export function reconstructPath(
   cameFrom: Map<string, CellPosition>,
-  current: CellPosition
+  current: CellPosition,
 ): CellPosition[] {
   const path: CellPosition[] = [current];
   let key = cellKey(current);

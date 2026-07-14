@@ -21,7 +21,11 @@ const LEGEND_ITEMS = [
   { color: COLORS.path, label: 'Path' },
 ];
 
-function getStatus(step: PathfindingAlgorithmStep | null, hasAlgorithm: boolean, grid: GridModel): string {
+function getStatus(
+  step: PathfindingAlgorithmStep | null,
+  hasAlgorithm: boolean,
+  grid: GridModel,
+): string {
   if (!hasAlgorithm) return 'Ready';
   if (!step) return 'Ready';
   if (step.done && step.path) {
@@ -40,23 +44,15 @@ export function InfoPanel({ step, algorithmInfo, hasAlgorithm, grid }: InfoPanel
   const pathSteps = step?.path ? step.path.length - 1 : null;
   const pathTotalCost = step?.path ? pathCost(step.path, grid) : null;
 
-  const showsWarning =
-    algorithmInfo &&
-    !algorithmInfo.weighted &&
-    hasGravel(grid);
+  const showsWarning = algorithmInfo && !algorithmInfo.weighted && hasGravel(grid);
 
-  const guaranteed =
-    algorithmInfo
-      ? algorithmInfo.guaranteesShortest(grid)
-      : false;
+  const guaranteed = algorithmInfo ? algorithmInfo.guaranteesShortest(grid) : false;
 
   return (
     <div className={styles.panel}>
       <div className={styles.section}>
         <div className={styles.status}>{status}</div>
-        {algorithmInfo && (
-          <div className={styles.algorithmTag}>{algorithmInfo.name}</div>
-        )}
+        {algorithmInfo && <div className={styles.algorithmTag}>{algorithmInfo.name}</div>}
       </div>
 
       {hasAlgorithm && (
@@ -69,16 +65,17 @@ export function InfoPanel({ step, algorithmInfo, hasAlgorithm, grid }: InfoPanel
           </span>
           {pathSteps !== null && (
             <span className={styles.stat}>
-              Path: <strong>{pathSteps} steps (cost: {pathTotalCost})</strong>
+              Path:{' '}
+              <strong>
+                {pathSteps} steps (cost: {pathTotalCost})
+              </strong>
             </span>
           )}
         </div>
       )}
 
       {showsWarning && (
-        <div className={styles.warning}>
-          This algorithm does not account for terrain costs.
-        </div>
+        <div className={styles.warning}>This algorithm does not account for terrain costs.</div>
       )}
 
       {algorithmInfo && (
@@ -90,10 +87,7 @@ export function InfoPanel({ step, algorithmInfo, hasAlgorithm, grid }: InfoPanel
       <div className={styles.legend}>
         {LEGEND_ITEMS.map((item) => (
           <div key={item.label} className={styles.legendItem}>
-            <span
-              className={styles.swatch}
-              style={{ backgroundColor: item.color }}
-            />
+            <span className={styles.swatch} style={{ backgroundColor: item.color }} />
             <span className={styles.legendLabel}>{item.label}</span>
           </div>
         ))}

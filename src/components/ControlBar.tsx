@@ -28,12 +28,7 @@ export function ControlBar({
 }: ControlBarProps) {
   return (
     <div className={styles.controlBar}>
-      <button
-        className={styles.btn}
-        onClick={onRun}
-        disabled={isPlaying}
-        title="Run algorithm"
-      >
+      <button className={styles.btn} onClick={onRun} disabled={isPlaying} title="Run algorithm">
         <RunIcon />
         Run
       </button>

@@ -14,7 +14,10 @@ const ROWS = 25;
 const COLS = 50;
 
 export function PathfindingPage() {
-  const { grid, setGrid, mode, setMode, handleCellClick, handleClearAll, handleReset } = useGrid(ROWS, COLS);
+  const { grid, setGrid, mode, setMode, handleCellClick, handleClearAll, handleReset } = useGrid(
+    ROWS,
+    COLS,
+  );
   const animation = useAnimation(grid);
   const [selectedAlgo, setSelectedAlgo] = useState('A*');
   const [selectedMaze, setSelectedMaze] = useState(getMazes()[0].name);
@@ -27,7 +30,7 @@ export function PathfindingPage() {
     if (algo) {
       animation.run(algo.fn, algo.name);
     }
-  }, [selectedAlgo, animation.run]);
+  }, [selectedAlgo, animation]);
 
   const handleAlgorithmChange = useCallback((name: string) => {
     setSelectedAlgo(name);

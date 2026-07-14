@@ -1,6 +1,11 @@
 import { SortingAlgorithmGenerator } from '../../types';
 
-function* mergeSortHelper(arr: number[], aux: number[], low: number, high: number): SortingAlgorithmGenerator {
+function* mergeSortHelper(
+  arr: number[],
+  aux: number[],
+  low: number,
+  high: number,
+): SortingAlgorithmGenerator {
   if (low >= high) return;
 
   const mid = Math.floor((low + high) / 2);
@@ -9,7 +14,13 @@ function* mergeSortHelper(arr: number[], aux: number[], low: number, high: numbe
   yield* merge(arr, aux, low, mid, high);
 }
 
-function* merge(arr: number[], aux: number[], low: number, mid: number, high: number): SortingAlgorithmGenerator {
+function* merge(
+  arr: number[],
+  aux: number[],
+  low: number,
+  mid: number,
+  high: number,
+): SortingAlgorithmGenerator {
   for (let k = low; k <= high; k++) {
     aux[k] = arr[k];
   }

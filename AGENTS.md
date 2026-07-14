@@ -8,9 +8,9 @@ npm run build     # tsc -b && vite build (typecheck first, then bundle)
 npm run preview   # Serve production build locally
 npm test          # vitest run (single run, all test files)
 npm run test:watch # vitest (watch mode)
+npm run lint       # ESLint — check for code quality issues
+npm run format     # Prettier — format source files
 ```
-
-No linter or formatter is configured.
 
 ## Workflow
 

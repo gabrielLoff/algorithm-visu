@@ -10,8 +10,7 @@ export function recursiveDivision(grid: GridModel): GridModel {
 
     if (height < 3 || width < 3) return;
 
-    const horizontal =
-      height > width || (height === width && Math.random() < 0.5);
+    const horizontal = height > width || (height === width && Math.random() < 0.5);
 
     if (horizontal) {
       const wallRow = r1 + 1 + Math.floor(Math.random() * (height - 2));
@@ -20,7 +19,12 @@ export function recursiveDivision(grid: GridModel): GridModel {
       for (let c = c1; c < c2; c++) {
         if (c === passageCol) continue;
         const current = cells[wallRow][c] as CellType;
-        if (current !== 'wall' && current !== 'start' && current !== 'goal' && current !== 'gravel') {
+        if (
+          current !== 'wall' &&
+          current !== 'start' &&
+          current !== 'goal' &&
+          current !== 'gravel'
+        ) {
           cells[wallRow][c] = 'wall';
         }
       }
@@ -34,7 +38,12 @@ export function recursiveDivision(grid: GridModel): GridModel {
       for (let r = r1; r < r2; r++) {
         if (r === passageRow) continue;
         const current = cells[r][wallCol] as CellType;
-        if (current !== 'wall' && current !== 'start' && current !== 'goal' && current !== 'gravel') {
+        if (
+          current !== 'wall' &&
+          current !== 'start' &&
+          current !== 'goal' &&
+          current !== 'gravel'
+        ) {
           cells[r][wallCol] = 'wall';
         }
       }

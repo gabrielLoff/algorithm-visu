@@ -42,14 +42,8 @@ export function* search(
       }
     }
 
-    const frontierKeys = new Set(
-      [...frontier.entries()].map(cellKey),
-    );
-    const { frontier: f, visited } = computeDisplayLists(
-      explored,
-      frontierKeys,
-      currentKey,
-    );
+    const frontierKeys = new Set([...frontier.entries()].map(cellKey));
+    const { frontier: f, visited } = computeDisplayLists(explored, frontierKeys, currentKey);
 
     yield { frontier: f, visited, current, path: null, done: false };
   }

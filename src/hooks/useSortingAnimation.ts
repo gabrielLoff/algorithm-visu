@@ -15,7 +15,10 @@ export function useSortingAnimation(array: number[]) {
   const [algorithmName, setAlgorithmName] = useState<string | null>(null);
   const intervalRef = useRef<number | null>(null);
   const arrayRef = useRef(array);
-  arrayRef.current = array;
+
+  useEffect(() => {
+    arrayRef.current = array;
+  });
 
   const stopTimer = useCallback(() => {
     if (intervalRef.current !== null) {
@@ -41,7 +44,7 @@ export function useSortingAnimation(array: number[]) {
       setIsDone(false);
       setIsPlaying(false);
     },
-    [stopTimer]
+    [stopTimer],
   );
 
   const play = useCallback(() => {

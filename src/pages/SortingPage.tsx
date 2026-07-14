@@ -18,15 +18,14 @@ export function SortingPage() {
   const algorithms = getSortingAlgorithms();
   const [selectedAlgo, setSelectedAlgo] = useState(algorithms[0]?.name ?? '');
 
-  const algorithmInfo: SortingAlgorithmInfo | null =
-    getSortingAlgorithm(selectedAlgo) ?? null;
+  const algorithmInfo: SortingAlgorithmInfo | null = getSortingAlgorithm(selectedAlgo) ?? null;
 
   const handleRun = useCallback(() => {
     const algo = getSortingAlgorithm(selectedAlgo);
     if (algo) {
       animation.run(algo.fn, algo.name);
     }
-  }, [selectedAlgo, animation.run]);
+  }, [selectedAlgo, animation]);
 
   const handleAlgorithmChange = useCallback((name: string) => {
     setSelectedAlgo(name);
@@ -41,10 +40,9 @@ export function SortingPage() {
     setArray(generateArray(size));
   }, [size]);
 
-  const comparisons =
-    animation.currentStep?.done
-      ? animation.steps.filter((s) => s.swapped !== undefined).length
-      : null;
+  const comparisons = animation.currentStep?.done
+    ? animation.steps.filter((s) => s.swapped !== undefined).length
+    : null;
 
   return (
     <div className={styles.page}>
@@ -70,7 +68,14 @@ export function SortingPage() {
         onRun={handleRun}
       />
       {algorithmInfo && (
-        <div style={{ padding: '8px 16px', fontSize: '13px', color: '#9ca3af', borderTop: '1px solid #374151' }}>
+        <div
+          style={{
+            padding: '8px 16px',
+            fontSize: '13px',
+            color: '#9ca3af',
+            borderTop: '1px solid #374151',
+          }}
+        >
           {algorithmInfo.description}
           {comparisons !== null && ` — Steps: ${comparisons}`}
         </div>
