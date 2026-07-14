@@ -30,11 +30,7 @@ export interface NeighborInfo {
   cost: number;
 }
 
-export function getNeighbors(
-  grid: GridModel,
-  pos: CellPosition,
-  step: number = 1,
-): NeighborInfo[] {
+export function getNeighbors(grid: GridModel, pos: CellPosition, step: number = 1): NeighborInfo[] {
   const neighbors: NeighborInfo[] = [];
   for (const dir of DIRECTIONS) {
     const nr = pos.row + dir.row * step;
@@ -67,9 +63,7 @@ export function hasGravel(grid: GridModel): boolean {
 }
 
 export function pathCost(path: CellPosition[], grid: GridModel): number {
-  return path
-    .slice(1)
-    .reduce((sum, p) => sum + getCost(grid.cells[p.row][p.col]), 0);
+  return path.slice(1).reduce((sum, p) => sum + getCost(grid.cells[p.row][p.col]), 0);
 }
 
 export function pathExists(grid: GridModel): boolean {

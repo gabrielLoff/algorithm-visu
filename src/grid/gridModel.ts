@@ -75,7 +75,7 @@ export function clearAll(grid: GridModel): GridModel {
     row.map((cell) => {
       if (cell === 'wall' || cell === 'gravel') return 'default';
       return cell;
-    })
+    }),
   );
   return { ...grid, cells };
 }

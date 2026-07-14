@@ -43,7 +43,9 @@ export function Toolbar({
     <div className={styles.toolbar}>
       <button
         className={styles.btn}
-        onClick={() => { window.location.hash = '#/'; }}
+        onClick={() => {
+          window.location.hash = '#/';
+        }}
       >
         Home
       </button>
@@ -77,11 +79,7 @@ export function Toolbar({
             </option>
           ))}
         </select>
-        <button
-          className={styles.btn}
-          onClick={onGenerateMaze}
-          disabled={isAnimating}
-        >
+        <button className={styles.btn} onClick={onGenerateMaze} disabled={isAnimating}>
           Generate
         </button>
       </div>
@@ -103,18 +101,10 @@ export function Toolbar({
       </div>
 
       <div className={styles.section}>
-        <button
-          className={styles.btn}
-          onClick={onClearAll}
-          disabled={isAnimating}
-        >
+        <button className={styles.btn} onClick={onClearAll} disabled={isAnimating}>
           Clear All
         </button>
-        <button
-          className={styles.btn}
-          onClick={onReset}
-          disabled={isAnimating}
-        >
+        <button className={styles.btn} onClick={onReset} disabled={isAnimating}>
           Reset
         </button>
       </div>

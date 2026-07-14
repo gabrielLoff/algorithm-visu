@@ -129,12 +129,13 @@ function testAlgorithm(name: string, fn: PathfindingAlgorithmFn, shouldFindShort
         const last = steps[steps.length - 1];
         const path = last.path!;
 
-        const expected = Math.abs(grid.start!.row - grid.goal!.row) +
-          Math.abs(grid.start!.col - grid.goal!.col) + 1;
+        const expected =
+          Math.abs(grid.start!.row - grid.goal!.row) +
+          Math.abs(grid.start!.col - grid.goal!.col) +
+          1;
         expect(path.length).toBe(expected);
       });
     }
-
   });
 }
 

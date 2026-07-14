@@ -41,7 +41,7 @@ export function GridCanvas({ grid, step, onCellClick, isAnimating }: GridCanvasP
       }
       return null;
     },
-    [grid.rows, grid.cols]
+    [grid.rows, grid.cols],
   );
 
   const handleMouseDown = useCallback(
@@ -51,7 +51,7 @@ export function GridCanvas({ grid, step, onCellClick, isAnimating }: GridCanvasP
       const pos = getCellPos(e);
       if (pos) onCellClick(pos);
     },
-    [isAnimating, getCellPos, onCellClick]
+    [isAnimating, getCellPos, onCellClick],
   );
 
   const handleMouseMove = useCallback(
@@ -62,7 +62,7 @@ export function GridCanvas({ grid, step, onCellClick, isAnimating }: GridCanvasP
         if (pos) onCellClick(pos);
       }
     },
-    [isAnimating, getCellPos, onCellClick]
+    [isAnimating, getCellPos, onCellClick],
   );
 
   const handleMouseUp = useCallback(() => {

@@ -1,5 +1,13 @@
 import { describe, it, expect } from 'vitest';
-import { getNeighbors, getCost, manhattan, euclidean, cellKey, parseCellKey, pathExists } from './gridUtils';
+import {
+  getNeighbors,
+  getCost,
+  manhattan,
+  euclidean,
+  cellKey,
+  parseCellKey,
+  pathExists,
+} from './gridUtils';
 import { createGrid, setWall } from './gridModel';
 
 function smallGrid() {
@@ -65,9 +73,7 @@ describe('getNeighbors', () => {
     const grid = createGrid(3, 3);
     grid.cells[0][1] = 'gravel';
     const neighbors = getNeighbors(grid, { row: 0, col: 0 });
-    const hasGravel = neighbors.some(
-      (n) => grid.cells[n.pos.row][n.pos.col] === 'gravel'
-    );
+    const hasGravel = neighbors.some((n) => grid.cells[n.pos.row][n.pos.col] === 'gravel');
     expect(hasGravel).toBe(true);
   });
 
@@ -85,9 +91,7 @@ describe('getNeighbors', () => {
     const grid = createGrid(3, 3);
     grid.cells[0][1] = 'gravel';
     const neighbors = getNeighbors(grid, { row: 0, col: 0 });
-    const gravelNeighbor = neighbors.find(
-      (n) => grid.cells[n.pos.row][n.pos.col] === 'gravel'
-    );
+    const gravelNeighbor = neighbors.find((n) => grid.cells[n.pos.row][n.pos.col] === 'gravel');
     expect(gravelNeighbor).toBeDefined();
     expect(gravelNeighbor!.cost).toBe(2);
   });

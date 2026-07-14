@@ -8,7 +8,14 @@ function* quickSortHelper(arr: number[], low: number, high: number): SortingAlgo
   yield* quickSortHelper(arr, pivotIndex + 1, high);
 }
 
-function* partition(arr: number[], low: number, high: number): Generator<{ array: number[]; compared: [number, number]; swapped: [number, number] | null; done: false }, number> {
+function* partition(
+  arr: number[],
+  low: number,
+  high: number,
+): Generator<
+  { array: number[]; compared: [number, number]; swapped: [number, number] | null; done: false },
+  number
+> {
   const pivot = arr[high];
   let i = low - 1;
 

@@ -15,7 +15,10 @@ export function useAnimation(grid: GridModel) {
   const [algorithmName, setAlgorithmName] = useState<string | null>(null);
   const intervalRef = useRef<number | null>(null);
   const gridRef = useRef(grid);
-  gridRef.current = grid;
+
+  useEffect(() => {
+    gridRef.current = grid;
+  });
 
   const stopTimer = useCallback(() => {
     if (intervalRef.current !== null) {
@@ -41,7 +44,7 @@ export function useAnimation(grid: GridModel) {
       setIsDone(false);
       setIsPlaying(false);
     },
-    [stopTimer]
+    [stopTimer],
   );
 
   const play = useCallback(() => {
