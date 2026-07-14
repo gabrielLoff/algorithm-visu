@@ -21,16 +21,11 @@ const LEGEND_ITEMS = [
   { color: COLORS.path, label: 'Path' },
 ];
 
-function getStatus(
-  step: PathfindingAlgorithmStep | null,
-  hasAlgorithm: boolean,
-  grid: GridModel,
-): string {
+function getStatus(step: PathfindingAlgorithmStep | null, hasAlgorithm: boolean, cost: number | null): string {
   if (!hasAlgorithm) return 'Ready';
   if (!step) return 'Ready';
   if (step.done && step.path) {
     const steps = step.path.length - 1;
-    const cost = pathCost(step.path, grid);
     return `Path found! (length: ${steps}, cost: ${cost})`;
   }
   if (step.done && !step.path) return 'No path exists';
@@ -38,11 +33,11 @@ function getStatus(
 }
 
 export function InfoPanel({ step, algorithmInfo, hasAlgorithm, grid }: InfoPanelProps) {
-  const status = getStatus(step, hasAlgorithm, grid);
+  const pathTotalCost = step?.path ? pathCost(step.path, grid) : null;
+  const status = getStatus(step, hasAlgorithm, pathTotalCost);
   const visitedCount = step ? step.visited.length : 0;
   const frontierCount = step ? step.frontier.length : 0;
   const pathSteps = step?.path ? step.path.length - 1 : null;
-  const pathTotalCost = step?.path ? pathCost(step.path, grid) : null;
 
   const showsWarning = algorithmInfo && !algorithmInfo.weighted && hasGravel(grid);
 

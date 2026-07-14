@@ -19,14 +19,13 @@ export function SortingToolbar({
   onRandomize,
   isAnimating,
 }: SortingToolbarProps) {
+  const goHome = () => {
+    window.location.hash = '#/';
+  };
+
   return (
     <div className={base.toolbar}>
-      <button
-        className={base.btn}
-        onClick={() => {
-          window.location.hash = '#/';
-        }}
-      >
+      <button className={base.btn} onClick={goHome}>
         Home
       </button>
       <div className={base.section}>

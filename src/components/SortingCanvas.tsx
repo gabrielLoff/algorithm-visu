@@ -45,7 +45,7 @@ export function SortingCanvas({ step, size }: SortingCanvasProps) {
 
       ctx.fillRect(x, height - PADDING - barHeight, barWidth, barHeight);
     }
-  }, [step, size]);
+  }, [step]);
 
   const canvasWidth = Math.max(400, size * 6);
 
