@@ -7,16 +7,8 @@ export function* dijkstra(grid: GridModel): PathfindingAlgorithmGenerator {
 
   const dist = new Map<string, number>();
   const cameFrom = new Map<string, CellPosition>();
-  const unvisited = new Set<string>();
   const frontierSet = new Set<string>();
-
-  for (let r = 0; r < grid.rows; r++) {
-    for (let c = 0; c < grid.cols; c++) {
-      if (grid.cells[r][c] !== 'wall') {
-        unvisited.add(cellKey({ row: r, col: c }));
-      }
-    }
-  }
+  const explored = new Set<string>();
 
   const startKey = cellKey(grid.start);
   dist.set(startKey, 0);
@@ -38,7 +30,7 @@ export function* dijkstra(grid: GridModel): PathfindingAlgorithmGenerator {
     if (!minNode) break;
     const currentKey = cellKey(minNode);
     frontierSet.delete(currentKey);
-    unvisited.delete(currentKey);
+    explored.add(currentKey);
 
     if (minNode.row === grid.goal.row && minNode.col === grid.goal.col) {
       const path = reconstructPath(cameFrom, minNode);
@@ -49,7 +41,7 @@ export function* dijkstra(grid: GridModel): PathfindingAlgorithmGenerator {
     const neighbors = getNeighbors(grid, minNode);
     for (const n of neighbors) {
       const nKey = cellKey(n.pos);
-      if (!unvisited.has(nKey)) continue;
+      if (explored.has(nKey) || frontierSet.has(nKey)) continue;
       const alt = minDist + n.cost;
       if (alt < (dist.get(nKey) ?? Infinity)) {
         dist.set(nKey, alt);
@@ -58,7 +50,6 @@ export function* dijkstra(grid: GridModel): PathfindingAlgorithmGenerator {
       }
     }
 
-    const explored = new Set(cameFrom.keys());
     const { frontier, visited } = separateFrontierAndVisited(explored, frontierSet, currentKey);
 
     yield { frontier, visited, current: minNode, path: null, done: false };
