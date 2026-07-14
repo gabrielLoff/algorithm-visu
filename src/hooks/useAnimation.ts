@@ -14,6 +14,8 @@ export function useAnimation(grid: GridModel) {
   const [speed, setSpeed] = useState(50);
   const [algorithmName, setAlgorithmName] = useState<string | null>(null);
   const intervalRef = useRef<number | null>(null);
+  const gridRef = useRef(grid);
+  gridRef.current = grid;
 
   const stopTimer = useCallback(() => {
     if (intervalRef.current !== null) {
@@ -28,7 +30,7 @@ export function useAnimation(grid: GridModel) {
       setAlgorithmName(name);
 
       const collected: AlgorithmStep[] = [];
-      const gen = algorithmFn(grid);
+      const gen = algorithmFn(gridRef.current);
 
       for (const step of gen) {
         collected.push(step);
@@ -39,7 +41,7 @@ export function useAnimation(grid: GridModel) {
       setIsDone(false);
       setIsPlaying(false);
     },
-    [grid, stopTimer]
+    [stopTimer]
   );
 
   const play = useCallback(() => {
