@@ -1,6 +1,6 @@
 import { PathfindingAlgorithmGenerator, CellPosition, GridModel } from '../../types';
 import { getNeighbors, cellKey, parseCellKey } from '../../grid/gridUtils';
-import { reconstructPath, computeDisplayLists } from './pathUtils';
+import { reconstructPath, separateFrontierAndVisited } from './pathUtils';
 
 export function* dijkstra(grid: GridModel): PathfindingAlgorithmGenerator {
   if (!grid.start || !grid.goal) return;
@@ -59,7 +59,7 @@ export function* dijkstra(grid: GridModel): PathfindingAlgorithmGenerator {
     }
 
     const explored = new Set(cameFrom.keys());
-    const { frontier, visited } = computeDisplayLists(explored, frontierSet, currentKey);
+    const { frontier, visited } = separateFrontierAndVisited(explored, frontierSet, currentKey);
 
     yield { frontier, visited, current: minNode, path: null, done: false };
   }

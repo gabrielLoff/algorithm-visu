@@ -14,7 +14,7 @@ function queueStrategy(): FrontierStrategy {
       return items.length;
     },
     entries() {
-      return items;
+      return [...items];
     },
   };
 }

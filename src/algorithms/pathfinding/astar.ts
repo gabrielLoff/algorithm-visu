@@ -1,6 +1,6 @@
 import { PathfindingAlgorithmGenerator, CellPosition, GridModel } from '../../types';
 import { getNeighbors, manhattan, cellKey } from '../../grid/gridUtils';
-import { reconstructPath, computeDisplayLists } from './pathUtils';
+import { reconstructPath, separateFrontierAndVisited } from './pathUtils';
 
 interface AStarNode {
   pos: CellPosition;
@@ -27,6 +27,8 @@ export function* astar(grid: GridModel): PathfindingAlgorithmGenerator {
   yield { frontier: [grid.start], visited: [], current: null, path: null, done: false };
 
   while (openSet.length > 0) {
+    // Re-sort each iteration for simplicity; a binary heap would be faster
+    // but adds complexity that doesn't benefit the visualization.
     openSet.sort((a, b) => a.f - b.f);
     const current = openSet.shift()!;
     const currentKey = cellKey(current.pos);
@@ -53,7 +55,7 @@ export function* astar(grid: GridModel): PathfindingAlgorithmGenerator {
     }
 
     const frontierKeys = new Set(openSet.map((n) => cellKey(n.pos)));
-    const { frontier, visited } = computeDisplayLists(explored, frontierKeys, currentKey);
+    const { frontier, visited } = separateFrontierAndVisited(explored, frontierKeys, currentKey);
 
     yield { frontier, visited, current: current.pos, path: null, done: false };
   }
