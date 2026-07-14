@@ -31,8 +31,11 @@ function* countingSortForRadix(arr: number[], exp: number): SortingAlgorithmGene
   }
 
   for (let i = 0; i < n; i++) {
+    const changed = arr[i] !== output[i];
     arr[i] = output[i];
-    yield { array: [...arr], compared: [i, i], swapped: [i, i], done: false };
+    if (changed) {
+      yield { array: [...arr], compared: [i, i], swapped: [i, i], done: false };
+    }
   }
 }
 

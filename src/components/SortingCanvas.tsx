@@ -1,6 +1,6 @@
 import { useRef, useEffect } from 'react';
 import { SortingAlgorithmStep } from '../types';
-import { COLORS } from '../constants/colors';
+import { SORTING_COLORS } from '../constants/colors';
 import styles from './SortingCanvas.module.css';
 
 interface SortingCanvasProps {
@@ -36,11 +36,11 @@ export function SortingCanvas({ step, size }: SortingCanvasProps) {
       const x = PADDING + i * ((width - PADDING * 2) / array.length);
 
       if (swapped && (swapped[0] === i || swapped[1] === i)) {
-        ctx.fillStyle = COLORS.path;
+        ctx.fillStyle = SORTING_COLORS.swapped;
       } else if (compared && (compared[0] === i || compared[1] === i)) {
-        ctx.fillStyle = COLORS.current;
+        ctx.fillStyle = SORTING_COLORS.compared;
       } else {
-        ctx.fillStyle = COLORS.visited;
+        ctx.fillStyle = SORTING_COLORS.bar;
       }
 
       ctx.fillRect(x, height - PADDING - barHeight, barWidth, barHeight);
