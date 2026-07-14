@@ -1,5 +1,5 @@
-import { CellPosition } from '../types';
-import { cellKey, parseCellKey } from '../grid/gridUtils';
+import { CellPosition } from '../../types';
+import { cellKey, parseCellKey } from '../../grid/gridUtils';
 
 export function reconstructPath(
   cameFrom: Map<string, CellPosition>,

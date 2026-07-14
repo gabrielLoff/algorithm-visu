@@ -1,5 +1,5 @@
-import { PathfindingAlgorithmGenerator, CellPosition, GridModel } from '../types';
-import { getNeighbors, manhattan, cellKey } from '../grid/gridUtils';
+import { PathfindingAlgorithmGenerator, CellPosition, GridModel } from '../../types';
+import { getNeighbors, manhattan, cellKey } from '../../grid/gridUtils';
 import { reconstructPath, computeDisplayLists } from './pathUtils';
 
 interface AStarNode {

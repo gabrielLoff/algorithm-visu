@@ -1,4 +1,4 @@
-import { PathfindingAlgorithmGenerator, CellPosition, GridModel } from '../types';
+import { PathfindingAlgorithmGenerator, CellPosition, GridModel } from '../../types';
 import { search, FrontierStrategy } from './search';
 
 function queueStrategy(): FrontierStrategy {
