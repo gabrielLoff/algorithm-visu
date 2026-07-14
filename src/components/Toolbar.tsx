@@ -40,14 +40,13 @@ export function Toolbar({
   const algorithms = getAlgorithms();
   const mazes = getMazes();
 
+  const goHome = () => {
+    window.location.hash = '#/';
+  };
+
   return (
     <div className={base.toolbar}>
-      <button
-        className={base.btn}
-        onClick={() => {
-          window.location.hash = '#/';
-        }}
-      >
+      <button className={base.btn} onClick={goHome}>
         Home
       </button>
       <div className={base.section}>
