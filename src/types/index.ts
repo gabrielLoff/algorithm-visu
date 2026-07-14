@@ -37,3 +37,20 @@ export interface PathfindingAlgorithmInfo {
 }
 
 export type EditMode = 'wall' | 'start' | 'goal' | 'gravel' | 'default';
+
+export type SortingAlgorithmStep = {
+  array: number[];
+  compared: [number, number];
+  swapped: [number, number] | null;
+  done: boolean;
+};
+
+export type SortingAlgorithmGenerator = Generator<SortingAlgorithmStep, void, undefined>;
+
+export type SortingAlgorithmFn = (array: number[]) => SortingAlgorithmGenerator;
+
+export interface SortingAlgorithmInfo {
+  name: string;
+  fn: SortingAlgorithmFn;
+  description: string;
+}
