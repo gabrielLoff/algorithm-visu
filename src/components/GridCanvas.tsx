@@ -1,11 +1,11 @@
 import { useRef, useEffect, useCallback } from 'react';
-import { GridModel, AlgorithmStep, CellPosition } from '../types';
+import { GridModel, PathfindingAlgorithmStep, CellPosition } from '../types';
 import { renderFrame } from '../renderer/canvasRenderer';
 import styles from './GridCanvas.module.css';
 
 interface GridCanvasProps {
   grid: GridModel;
-  step: AlgorithmStep | null;
+  step: PathfindingAlgorithmStep | null;
   onCellClick: (pos: CellPosition) => void;
   isAnimating: boolean;
 }

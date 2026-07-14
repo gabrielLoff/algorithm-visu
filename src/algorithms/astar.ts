@@ -1,4 +1,4 @@
-import { AlgorithmGenerator, CellPosition, GridModel } from '../types';
+import { PathfindingAlgorithmGenerator, CellPosition, GridModel } from '../types';
 import { getNeighbors, manhattan, cellKey } from '../grid/gridUtils';
 import { reconstructPath, computeDisplayLists } from './pathUtils';
 
@@ -8,7 +8,7 @@ interface AStarNode {
   f: number;
 }
 
-export function* astar(grid: GridModel): AlgorithmGenerator {
+export function* astar(grid: GridModel): PathfindingAlgorithmGenerator {
   if (!grid.start || !grid.goal) return;
 
   const gScore = new Map<string, number>();

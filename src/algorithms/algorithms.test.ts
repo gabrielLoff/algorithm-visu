@@ -6,7 +6,7 @@ import { astar } from './astar';
 import { dijkstra } from './dijkstra';
 import { bfs } from './bfs';
 import { dfs } from './dfs';
-import type { AlgorithmFn, GridModel, AlgorithmStep } from '../types';
+import type { PathfindingAlgorithmFn, GridModel, PathfindingAlgorithmStep } from '../types';
 
 function makeGrid(rows: number, cols: number): GridModel {
   return createGrid(rows, cols);
@@ -32,8 +32,8 @@ function wallOffGoal(grid: GridModel): GridModel {
   return g;
 }
 
-function runAlgorithm(fn: AlgorithmFn, grid: GridModel): AlgorithmStep[] {
-  const steps: AlgorithmStep[] = [];
+function runAlgorithm(fn: PathfindingAlgorithmFn, grid: GridModel): PathfindingAlgorithmStep[] {
+  const steps: PathfindingAlgorithmStep[] = [];
   const gen = fn(grid);
   for (const step of gen) {
     steps.push(step);
@@ -41,7 +41,7 @@ function runAlgorithm(fn: AlgorithmFn, grid: GridModel): AlgorithmStep[] {
   return steps;
 }
 
-function pathIsContinuous(path: NonNullable<AlgorithmStep['path']>): boolean {
+function pathIsContinuous(path: NonNullable<PathfindingAlgorithmStep['path']>): boolean {
   for (let i = 1; i < path.length; i++) {
     const dr = Math.abs(path[i].row - path[i - 1].row);
     const dc = Math.abs(path[i].col - path[i - 1].col);
@@ -50,7 +50,7 @@ function pathIsContinuous(path: NonNullable<AlgorithmStep['path']>): boolean {
   return true;
 }
 
-function testAlgorithm(name: string, fn: AlgorithmFn, shouldFindShortest: boolean) {
+function testAlgorithm(name: string, fn: PathfindingAlgorithmFn, shouldFindShortest: boolean) {
   describe(name, () => {
     it('finds a path on an empty grid', () => {
       const grid = makeGrid(5, 5);

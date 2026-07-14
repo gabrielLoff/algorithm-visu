@@ -1,11 +1,11 @@
-import { AlgorithmStep, AlgorithmInfo, GridModel } from '../types';
+import { PathfindingAlgorithmStep, PathfindingAlgorithmInfo, GridModel } from '../types';
 import { hasGravel, pathCost } from '../grid/gridUtils';
 import { COLORS } from '../constants/colors';
 import styles from './InfoPanel.module.css';
 
 interface InfoPanelProps {
-  step: AlgorithmStep | null;
-  algorithmInfo: AlgorithmInfo | null;
+  step: PathfindingAlgorithmStep | null;
+  algorithmInfo: PathfindingAlgorithmInfo | null;
   hasAlgorithm: boolean;
   grid: GridModel;
 }
@@ -21,7 +21,7 @@ const LEGEND_ITEMS = [
   { color: COLORS.path, label: 'Path' },
 ];
 
-function getStatus(step: AlgorithmStep | null, hasAlgorithm: boolean, grid: GridModel): string {
+function getStatus(step: PathfindingAlgorithmStep | null, hasAlgorithm: boolean, grid: GridModel): string {
   if (!hasAlgorithm) return 'Ready';
   if (!step) return 'Ready';
   if (step.done && step.path) {

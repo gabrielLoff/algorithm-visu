@@ -1,4 +1,4 @@
-import { AlgorithmGenerator, CellPosition, GridModel } from '../types';
+import { PathfindingAlgorithmGenerator, CellPosition, GridModel } from '../types';
 import { getNeighbors, cellKey } from '../grid/gridUtils';
 import { reconstructPath, computeDisplayLists } from './pathUtils';
 
@@ -12,7 +12,7 @@ export interface FrontierStrategy {
 export function* search(
   grid: GridModel,
   frontier: FrontierStrategy,
-): AlgorithmGenerator {
+): PathfindingAlgorithmGenerator {
   if (!grid.start || !grid.goal) return;
 
   frontier.add(grid.start);

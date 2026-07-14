@@ -1,4 +1,4 @@
-import { AlgorithmGenerator, CellPosition, GridModel } from '../types';
+import { PathfindingAlgorithmGenerator, CellPosition, GridModel } from '../types';
 import { search, FrontierStrategy } from './search';
 
 function queueStrategy(): FrontierStrategy {
@@ -19,6 +19,6 @@ function queueStrategy(): FrontierStrategy {
   };
 }
 
-export function* bfs(grid: GridModel): AlgorithmGenerator {
+export function* bfs(grid: GridModel): PathfindingAlgorithmGenerator {
   yield* search(grid, queueStrategy());
 }
