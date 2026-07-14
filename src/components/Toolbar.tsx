@@ -1,6 +1,7 @@
 import { EditMode } from '../types';
 import { getAlgorithms } from '../algorithms/pathfinding';
 import { getMazes } from '../maze';
+import { navigateHome } from '../visualizers';
 import base from './ToolbarBase.module.css';
 import styles from './Toolbar.module.css';
 
@@ -40,13 +41,9 @@ export function Toolbar({
   const algorithms = getAlgorithms();
   const mazes = getMazes();
 
-  const goHome = () => {
-    window.location.hash = '#/';
-  };
-
   return (
     <div className={base.toolbar}>
-      <button className={base.btn} onClick={goHome}>
+      <button className={base.btn} onClick={navigateHome}>
         Home
       </button>
       <div className={base.section}>

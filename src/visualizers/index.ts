@@ -33,3 +33,7 @@ const visualizers: VisualizerInfo[] = [
 export function getVisualizers(): readonly VisualizerInfo[] {
   return visualizers;
 }
+
+export function navigateHome(): void {
+  window.location.hash = '#/';
+}

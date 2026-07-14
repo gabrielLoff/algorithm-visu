@@ -4,7 +4,8 @@ import { BSTCanvas } from '../components/BSTCanvas';
 import { ControlBar } from '../components/ControlBar';
 import { useBSTAnimation } from '../hooks/useBSTAnimation';
 import { getBSTAlgorithm, getBSTAlgorithms } from '../algorithms/bst';
-import { createNode } from '../algorithms/bst/treeUtils';
+import { createNode, insertValue, countNodes } from '../algorithms/bst/treeUtils';
+import { navigateHome } from '../visualizers';
 import type { BSTNode } from '../types';
 import styles from './BSTPage.module.css';
 
@@ -34,11 +35,15 @@ export function BSTPage() {
     setValue(nodeValue);
   }, []);
 
-  const goHome = () => {
-    window.location.hash = '#/';
-  };
-
   const lastStep = animation.currentStep;
+
+  const buildRandomTree = () => {
+    const t = createNode(Math.floor(Math.random() * 100));
+    for (let i = 0; i < 7; i++) {
+      insertValue(t, Math.floor(Math.random() * 100));
+    }
+    setTree(t);
+  };
 
   return (
     <div className={styles.page}>
@@ -65,61 +70,19 @@ export function BSTPage() {
         onSpeedChange={animation.setSpeed}
         onRun={handleRun}
       />
-      <div style={{ padding: '8px 16px', display: 'flex', gap: 16, alignItems: 'center', borderTop: '1px solid #374151' }}>
-        <button
-          onClick={goHome}
-          style={{
-            padding: '6px 14px',
-            borderRadius: 6,
-            border: '1px solid #374151',
-            background: '#111827',
-            color: '#e5e7eb',
-            fontSize: 13,
-            cursor: 'pointer',
-          }}
-        >
+      <div className={styles.footer}>
+        <button className={styles.homeBtn} onClick={navigateHome}>
           Home
         </button>
-        <span style={{ color: '#9ca3af', fontSize: 13 }}>
-          {tree ? `Tree has ${countNodes(tree)} nodes` : 'Tree is empty — click Insert or use Randomize'}
+        <span className={styles.status}>
+          {tree
+            ? `Tree has ${countNodes(tree)} nodes`
+            : "Tree is empty — select 'Insert' from the algorithm menu and click Run, or use Random Tree"}
         </span>
-        <button
-          onClick={() => {
-            let t: BSTNode | null = createNode(Math.floor(Math.random() * 100));
-            for (let i = 0; i < 7; i++) {
-              const v = Math.floor(Math.random() * 100);
-              insertValue(t!, v);
-            }
-            setTree(t);
-          }}
-          style={{
-            padding: '4px 12px',
-            borderRadius: 6,
-            border: '1px solid #374151',
-            background: '#111827',
-            color: '#e5e7eb',
-            fontSize: 12,
-            cursor: 'pointer',
-          }}
-        >
+        <button className={styles.randomBtn} onClick={buildRandomTree}>
           Random Tree
         </button>
       </div>
     </div>
   );
-}
-
-function countNodes(node: BSTNode | null): number {
-  if (!node) return 0;
-  return 1 + countNodes(node.left) + countNodes(node.right);
-}
-
-function insertValue(node: BSTNode, value: number): void {
-  if (value < node.value) {
-    if (node.left) insertValue(node.left, value);
-    else node.left = createNode(value);
-  } else if (value > node.value) {
-    if (node.right) insertValue(node.right, value);
-    else node.right = createNode(value);
-  }
 }

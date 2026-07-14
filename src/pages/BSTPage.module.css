@@ -3,3 +3,36 @@
   flex-direction: column;
   height: 100vh;
 }
+
+.footer {
+  padding: 8px 16px;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  border-top: 1px solid #374151;
+}
+
+.homeBtn {
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: 1px solid #374151;
+  background: #111827;
+  color: #e5e7eb;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.status {
+  color: #9ca3af;
+  font-size: 13px;
+}
+
+.randomBtn {
+  padding: 4px 12px;
+  border-radius: 6px;
+  border: 1px solid #374151;
+  background: #111827;
+  color: #e5e7eb;
+  font-size: 12px;
+  cursor: pointer;
+}

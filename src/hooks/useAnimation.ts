@@ -1,10 +1,9 @@
 import { useRef, useEffect, useCallback } from 'react';
 import { PathfindingAlgorithmFn, PathfindingAlgorithmStep, GridModel } from '../types';
-import { useStepPlayer } from './useStepPlayer';
+import { useAlgorithmRunner } from './useAlgorithmRunner';
 
 export function useAnimation(grid: GridModel) {
-  const player = useStepPlayer<PathfindingAlgorithmStep>();
-  const { stopTimer, setAlgorithmName, setSteps, setCurrentStepIndex } = player;
+  const runner = useAlgorithmRunner<GridModel, PathfindingAlgorithmStep>();
   const gridRef = useRef(grid);
 
   useEffect(() => {
@@ -13,35 +12,10 @@ export function useAnimation(grid: GridModel) {
 
   const run = useCallback(
     (algorithmFn: PathfindingAlgorithmFn, name: string) => {
-      stopTimer();
-      setAlgorithmName(name);
-
-      const collected: PathfindingAlgorithmStep[] = [];
-      const gen = algorithmFn(gridRef.current);
-
-      for (const step of gen) {
-        collected.push(step);
-      }
-
-      setSteps(collected);
-      setCurrentStepIndex(0);
+      runner.run(algorithmFn(gridRef.current), name);
     },
-    [stopTimer, setAlgorithmName, setSteps, setCurrentStepIndex],
+    [runner.run],
   );
 
-  return {
-    steps: player.steps,
-    currentStepIndex: player.currentStepIndex,
-    isPlaying: player.isPlaying,
-    isDone: player.isDone,
-    speed: player.speed,
-    algorithmName: player.algorithmName,
-    play: player.play,
-    pause: player.pause,
-    stepForward: player.stepForward,
-    stepBackward: player.stepBackward,
-    setSpeed: player.setSpeed,
-    run,
-    currentStep: player.currentStep,
-  };
+  return { ...runner, run };
 }
