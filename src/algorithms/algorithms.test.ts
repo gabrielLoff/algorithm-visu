@@ -1,11 +1,11 @@
 import { describe, it, expect } from 'vitest';
 import { createGrid, setWall, setGravel, setCell } from '../grid/gridModel';
 import { pathCost } from '../grid/gridUtils';
-import { getAlgorithm } from './index';
-import { astar } from './astar';
-import { dijkstra } from './dijkstra';
-import { bfs } from './bfs';
-import { dfs } from './dfs';
+import { getAlgorithm } from './pathfinding';
+import { astar } from './pathfinding/astar';
+import { dijkstra } from './pathfinding/dijkstra';
+import { bfs } from './pathfinding/bfs';
+import { dfs } from './pathfinding/dfs';
 import type { PathfindingAlgorithmFn, GridModel, PathfindingAlgorithmStep } from '../types';
 
 function makeGrid(rows: number, cols: number): GridModel {

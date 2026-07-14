@@ -1,5 +1,5 @@
-import { PathfindingAlgorithmGenerator, CellPosition, GridModel } from '../types';
-import { getNeighbors, cellKey, parseCellKey } from '../grid/gridUtils';
+import { PathfindingAlgorithmGenerator, CellPosition, GridModel } from '../../types';
+import { getNeighbors, cellKey, parseCellKey } from '../../grid/gridUtils';
 import { reconstructPath, computeDisplayLists } from './pathUtils';
 
 export function* dijkstra(grid: GridModel): PathfindingAlgorithmGenerator {

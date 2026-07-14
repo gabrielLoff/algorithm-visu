@@ -1,5 +1,5 @@
 import { EditMode } from '../types';
-import { getAlgorithms } from '../algorithms';
+import { getAlgorithms } from '../algorithms/pathfinding';
 import { getMazes } from '../maze';
 import styles from './Toolbar.module.css';
 

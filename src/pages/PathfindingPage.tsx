@@ -5,7 +5,7 @@ import { ControlBar } from '../components/ControlBar';
 import { InfoPanel } from '../components/InfoPanel';
 import { useGrid } from '../hooks/useGrid';
 import { useAnimation } from '../hooks/useAnimation';
-import { getAlgorithm } from '../algorithms';
+import { getAlgorithm } from '../algorithms/pathfinding';
 import { getMaze, getMazes } from '../maze';
 import type { PathfindingAlgorithmInfo } from '../types';
 import styles from './PathfindingPage.module.css';

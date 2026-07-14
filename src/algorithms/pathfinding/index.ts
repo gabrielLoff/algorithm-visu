@@ -1,5 +1,5 @@
-import { PathfindingAlgorithmInfo, GridModel } from '../types';
-import { hasGravel } from '../grid/gridUtils';
+import { PathfindingAlgorithmInfo, GridModel } from '../../types';
+import { hasGravel } from '../../grid/gridUtils';
 import { astar } from './astar';
 import { dijkstra } from './dijkstra';
 import { bfs } from './bfs';
