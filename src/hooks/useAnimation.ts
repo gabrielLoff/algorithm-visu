@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
-import { AlgorithmFn, AlgorithmStep, GridModel } from '../types';
+import { PathfindingAlgorithmFn, PathfindingAlgorithmStep, GridModel } from '../types';
 
 const MIN_DELAY_MS = 10;
 const MAX_DELAY_MS = 200;
@@ -7,7 +7,7 @@ const MAX_DELAY_MS = 200;
 const SPEED_SCALE = 1.9;
 
 export function useAnimation(grid: GridModel) {
-  const [steps, setSteps] = useState<AlgorithmStep[]>([]);
+  const [steps, setSteps] = useState<PathfindingAlgorithmStep[]>([]);
   const [currentStepIndex, setCurrentStepIndex] = useState(-1);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isDone, setIsDone] = useState(false);
@@ -25,11 +25,11 @@ export function useAnimation(grid: GridModel) {
   }, []);
 
   const run = useCallback(
-    (algorithmFn: AlgorithmFn, name: string) => {
+    (algorithmFn: PathfindingAlgorithmFn, name: string) => {
       stopTimer();
       setAlgorithmName(name);
 
-      const collected: AlgorithmStep[] = [];
+      const collected: PathfindingAlgorithmStep[] = [];
       const gen = algorithmFn(gridRef.current);
 
       for (const step of gen) {
@@ -95,7 +95,7 @@ export function useAnimation(grid: GridModel) {
     setIsDone(false);
   }, []);
 
-  const currentStep: AlgorithmStep | null =
+  const currentStep: PathfindingAlgorithmStep | null =
     steps.length > 0 && currentStepIndex >= 0 && currentStepIndex < steps.length
       ? steps[currentStepIndex]
       : null;

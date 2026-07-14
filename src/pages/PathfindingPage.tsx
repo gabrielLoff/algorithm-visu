@@ -7,7 +7,7 @@ import { useGrid } from '../hooks/useGrid';
 import { useAnimation } from '../hooks/useAnimation';
 import { getAlgorithm } from '../algorithms';
 import { getMaze, getMazes } from '../maze';
-import type { AlgorithmInfo } from '../types';
+import type { PathfindingAlgorithmInfo } from '../types';
 import styles from './PathfindingPage.module.css';
 
 const ROWS = 25;
@@ -19,7 +19,7 @@ export function PathfindingPage() {
   const [selectedAlgo, setSelectedAlgo] = useState('A*');
   const [selectedMaze, setSelectedMaze] = useState(getMazes()[0].name);
 
-  const algorithmInfo: AlgorithmInfo | null = getAlgorithm(selectedAlgo) ?? null;
+  const algorithmInfo: PathfindingAlgorithmInfo | null = getAlgorithm(selectedAlgo) ?? null;
   const activeInfo = animation.algorithmName ? algorithmInfo : null;
 
   const handleRun = useCallback(() => {

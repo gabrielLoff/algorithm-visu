@@ -1,4 +1,4 @@
-import { CellType, CellPosition, GridModel, AlgorithmStep } from '../types';
+import { CellType, CellPosition, GridModel, PathfindingAlgorithmStep } from '../types';
 import { COLORS } from '../constants/colors';
 
 const PATH_WIDTH_RATIO = 0.6;
@@ -15,7 +15,7 @@ const MARKER_RADIUS_RATIO = 0.35;
 export function renderFrame(
   ctx: CanvasRenderingContext2D,
   grid: GridModel,
-  step: AlgorithmStep | null,
+  step: PathfindingAlgorithmStep | null,
   cellSize: number
 ): void {
   const width = grid.cols * cellSize;

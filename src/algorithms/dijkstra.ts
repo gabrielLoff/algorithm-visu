@@ -1,8 +1,8 @@
-import { AlgorithmGenerator, CellPosition, GridModel } from '../types';
+import { PathfindingAlgorithmGenerator, CellPosition, GridModel } from '../types';
 import { getNeighbors, cellKey, parseCellKey } from '../grid/gridUtils';
 import { reconstructPath, computeDisplayLists } from './pathUtils';
 
-export function* dijkstra(grid: GridModel): AlgorithmGenerator {
+export function* dijkstra(grid: GridModel): PathfindingAlgorithmGenerator {
   if (!grid.start || !grid.goal) return;
 
   const dist = new Map<string, number>();

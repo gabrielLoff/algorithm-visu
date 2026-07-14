@@ -13,7 +13,7 @@ export interface GridModel {
   goal: CellPosition | null;
 }
 
-export type AlgorithmStep = {
+export type PathfindingAlgorithmStep = {
   frontier: CellPosition[];
   visited: CellPosition[];
   current: CellPosition | null;
@@ -21,13 +21,13 @@ export type AlgorithmStep = {
   done: boolean;
 };
 
-export type AlgorithmGenerator = Generator<AlgorithmStep, void, undefined>;
+export type PathfindingAlgorithmGenerator = Generator<PathfindingAlgorithmStep, void, undefined>;
 
-export type AlgorithmFn = (grid: GridModel) => AlgorithmGenerator;
+export type PathfindingAlgorithmFn = (grid: GridModel) => PathfindingAlgorithmGenerator;
 
-export interface AlgorithmInfo {
+export interface PathfindingAlgorithmInfo {
   name: string;
-  fn: AlgorithmFn;
+  fn: PathfindingAlgorithmFn;
   description: string;
   weighted: boolean;
   /** Whether this algorithm guarantees a shortest path for the given grid.

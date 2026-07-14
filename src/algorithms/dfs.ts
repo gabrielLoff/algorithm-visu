@@ -1,4 +1,4 @@
-import { AlgorithmGenerator, CellPosition, GridModel } from '../types';
+import { PathfindingAlgorithmGenerator, CellPosition, GridModel } from '../types';
 import { search, FrontierStrategy } from './search';
 
 function stackStrategy(): FrontierStrategy {
@@ -19,6 +19,6 @@ function stackStrategy(): FrontierStrategy {
   };
 }
 
-export function* dfs(grid: GridModel): AlgorithmGenerator {
+export function* dfs(grid: GridModel): PathfindingAlgorithmGenerator {
   yield* search(grid, stackStrategy());
 }

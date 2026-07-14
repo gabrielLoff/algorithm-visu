@@ -1,11 +1,11 @@
-import { AlgorithmInfo, GridModel } from '../types';
+import { PathfindingAlgorithmInfo, GridModel } from '../types';
 import { hasGravel } from '../grid/gridUtils';
 import { astar } from './astar';
 import { dijkstra } from './dijkstra';
 import { bfs } from './bfs';
 import { dfs } from './dfs';
 
-const algorithms: AlgorithmInfo[] = [
+const algorithms: PathfindingAlgorithmInfo[] = [
   {
     name: 'A*',
     fn: astar,
@@ -36,10 +36,10 @@ const algorithms: AlgorithmInfo[] = [
   },
 ];
 
-export function getAlgorithm(name: string): AlgorithmInfo | undefined {
+export function getAlgorithm(name: string): PathfindingAlgorithmInfo | undefined {
   return algorithms.find((a) => a.name === name);
 }
 
-export function getAlgorithms(): readonly AlgorithmInfo[] {
+export function getAlgorithms(): readonly PathfindingAlgorithmInfo[] {
   return algorithms;
 }
