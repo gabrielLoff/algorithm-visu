@@ -68,14 +68,7 @@ export function SortingPage() {
         onRun={handleRun}
       />
       {algorithmInfo && (
-        <div
-          style={{
-            padding: '8px 16px',
-            fontSize: '13px',
-            color: '#9ca3af',
-            borderTop: '1px solid #374151',
-          }}
-        >
+        <div className={styles.footer}>
           {algorithmInfo.description}
           {comparisons !== null && ` — Steps: ${comparisons}`}
         </div>

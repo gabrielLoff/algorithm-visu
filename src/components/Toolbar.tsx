@@ -1,6 +1,7 @@
 import { EditMode } from '../types';
 import { getAlgorithms } from '../algorithms/pathfinding';
 import { getMazes } from '../maze';
+import base from './ToolbarBase.module.css';
 import styles from './Toolbar.module.css';
 
 const EDIT_MODES: { value: EditMode; label: string }[] = [
@@ -40,19 +41,19 @@ export function Toolbar({
   const mazes = getMazes();
 
   return (
-    <div className={styles.toolbar}>
+    <div className={base.toolbar}>
       <button
-        className={styles.btn}
+        className={base.btn}
         onClick={() => {
           window.location.hash = '#/';
         }}
       >
         Home
       </button>
-      <div className={styles.section}>
-        <label className={styles.label}>Algorithm</label>
+      <div className={base.section}>
+        <label className={base.label}>Algorithm</label>
         <select
-          className={styles.select}
+          className={base.select}
           value={selectedAlgorithm}
           onChange={(e) => onAlgorithmChange(e.target.value)}
           disabled={isAnimating}
@@ -65,10 +66,10 @@ export function Toolbar({
         </select>
       </div>
 
-      <div className={styles.section}>
-        <label className={styles.label}>Maze</label>
+      <div className={base.section}>
+        <label className={base.label}>Maze</label>
         <select
-          className={styles.select}
+          className={base.select}
           value={selectedMaze}
           onChange={(e) => onMazeChange(e.target.value)}
           disabled={isAnimating}
@@ -79,13 +80,13 @@ export function Toolbar({
             </option>
           ))}
         </select>
-        <button className={styles.btn} onClick={onGenerateMaze} disabled={isAnimating}>
+        <button className={base.btn} onClick={onGenerateMaze} disabled={isAnimating}>
           Generate
         </button>
       </div>
 
-      <div className={styles.section}>
-        <label className={styles.label}>Mode</label>
+      <div className={base.section}>
+        <label className={base.label}>Mode</label>
         <div className={styles.modeGroup}>
           {EDIT_MODES.map((m) => (
             <button
@@ -100,11 +101,11 @@ export function Toolbar({
         </div>
       </div>
 
-      <div className={styles.section}>
-        <button className={styles.btn} onClick={onClearAll} disabled={isAnimating}>
+      <div className={base.section}>
+        <button className={base.btn} onClick={onClearAll} disabled={isAnimating}>
           Clear All
         </button>
-        <button className={styles.btn} onClick={onReset} disabled={isAnimating}>
+        <button className={base.btn} onClick={onReset} disabled={isAnimating}>
           Reset
         </button>
       </div>
