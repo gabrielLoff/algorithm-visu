@@ -22,7 +22,7 @@ export function reconstructPath(
  * `frontier` contains all positions waiting to be explored.
  * `visited` contains explored positions minus those still in frontier or the current cell.
  */
-export function computeDisplayLists(
+export function separateFrontierAndVisited(
   explored: Set<string>,
   frontierKeys: Set<string>,
   currentKey: string | null,

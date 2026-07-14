@@ -30,6 +30,9 @@ export interface NeighborInfo {
   cost: number;
 }
 
+/** Returns traversable neighbor positions and their costs.
+ *  The `step` parameter (default 1) skips cells — used by Prim's maze generator (step=2)
+ *  to jump over intermediate walls. All pathfinding algorithms use the default. */
 export function getNeighbors(grid: GridModel, pos: CellPosition, step: number = 1): NeighborInfo[] {
   const neighbors: NeighborInfo[] = [];
   for (const dir of DIRECTIONS) {

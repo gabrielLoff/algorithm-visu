@@ -14,7 +14,7 @@ function stackStrategy(): FrontierStrategy {
       return items.length;
     },
     entries() {
-      return items;
+      return [...items];
     },
   };
 }

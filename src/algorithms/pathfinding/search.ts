@@ -1,6 +1,6 @@
 import { PathfindingAlgorithmGenerator, CellPosition, GridModel } from '../../types';
 import { getNeighbors, cellKey } from '../../grid/gridUtils';
-import { reconstructPath, computeDisplayLists } from './pathUtils';
+import { reconstructPath, separateFrontierAndVisited } from './pathUtils';
 
 export interface FrontierStrategy {
   add(item: CellPosition): void;
@@ -43,7 +43,7 @@ export function* search(
     }
 
     const frontierKeys = new Set([...frontier.entries()].map(cellKey));
-    const { frontier: f, visited } = computeDisplayLists(explored, frontierKeys, currentKey);
+    const { frontier: f, visited } = separateFrontierAndVisited(explored, frontierKeys, currentKey);
 
     yield { frontier: f, visited, current, path: null, done: false };
   }
