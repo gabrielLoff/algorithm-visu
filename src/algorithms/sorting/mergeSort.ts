@@ -43,6 +43,7 @@ function* merge(
       yield { array: [...arr], compared: [i, j], swapped: null, done: false };
       if (aux[i] <= aux[j]) {
         arr[k] = aux[i];
+        yield { array: [...arr], compared: [k, i], swapped: [k, i], done: false };
         i++;
       } else {
         arr[k] = aux[j];

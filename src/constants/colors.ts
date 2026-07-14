@@ -10,3 +10,9 @@ export const COLORS = {
   path: '#facc15',
   gridLine: '#d1d5db',
 };
+
+export const SORTING_COLORS = {
+  bar: 'rgba(103, 232, 249, 0.4)',
+  compared: '#a855f7',
+  swapped: '#facc15',
+};
