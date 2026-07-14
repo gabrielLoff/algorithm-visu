@@ -21,14 +21,16 @@ No linter or formatter is configured.
 - **Vite 6** + **React 18** + **TypeScript 5.6**
 - **CSS Modules** (`*.module.css`) for scoped styles
 - **HTML5 Canvas** for grid rendering (fixed 22px cell size)
-- No router, no state library, no UI framework
+- No external router, no state library, no UI framework — hash-based routing in `App.tsx`
 
 ## Architecture
 
 Entrypoint: `src/main.tsx` → `src/App.tsx`
 
-App owns all state and wires four component areas:
-- **Toolbar** — algorithm selector, edit mode, clear/reset
+`App.tsx` is a thin hash-based router — it reads `window.location.hash`, matches against the visualizer registry, and renders the matching page or the `HomePage` fallback.
+
+`PathfindingPage.tsx` owns the grid state and wires four component areas:
+- **Toolbar** — algorithm selector, maze generator, edit mode, clear/reset, Home button
 - **GridCanvas** — `<canvas>` with mouse-down/drag interaction
 - **ControlBar** — play/pause/step/speed
 - **InfoPanel** — stats and legend
@@ -38,7 +40,7 @@ App owns all state and wires four component areas:
 ```
 useGrid (grid state + edit mode)     useAnimation (step playback)
        \                                    /
-        → App passes grid + currentStep → GridCanvas
+        → PathfindingPage passes grid + currentStep → GridCanvas
         → GridCanvas calls renderFrame(canvasRenderer.ts)
 ```
 
@@ -46,11 +48,16 @@ useGrid (grid state + edit mode)     useAnimation (step playback)
 
 | Directory | Purpose |
 |---|---|
-| `src/types/` | Shared types: `CellType` (`'default' \| 'wall' \| 'start' \| 'goal' \| 'gravel'`), `GridModel`, `AlgorithmStep`, `AlgorithmGenerator`, `AlgorithmFn`, `AlgorithmInfo`, `EditMode` |
-| `src/grid/` | `gridModel.ts` — pure immutable grid operations (setWall, setGravel, setDefault, setStart, setGoal, clearAll). `gridUtils.ts` — `getNeighbors` (returns `{ pos, cost }[]`), `getCost`, `pathExists`, `hasGravel`, `manhattan`, `euclidean`, `cellKey` |
-| `src/algorithms/` | Generator functions: `astar`, `dijkstra`, `bfs`, `dfs`. Shared `search.ts` parameterizes BFS/DFS via frontier strategy. Registry in `index.ts` via `getAlgorithm(name)` |
+| `src/types/` | Shared types: `CellType` (`'default' \| 'wall' \| 'start' \| 'goal' \| 'gravel'`), `GridModel`, `PathfindingAlgorithmStep`, `PathfindingAlgorithmGenerator`, `PathfindingAlgorithmFn`, `PathfindingAlgorithmInfo`, `EditMode` |
+| `src/grid/` | `gridModel.ts` — pure immutable grid operations (`createGrid`, `setCell`, `setWall`, `setGravel`, `setDefault`, `setStart`, `setGoal`, `clearAll`, `resetGrid`). `gridUtils.ts` — `getNeighbors` (returns `{ pos, cost }[]`), `getCost`, `pathCost`, `pathExists`, `hasGravel`, `manhattan`, `euclidean`, `cellKey`, `parseCellKey`, `DIRECTIONS` |
+| `src/algorithms/pathfinding/` | Generator functions: `astar`, `dijkstra`, `bfs`, `dfs`. Shared `search.ts` parameterizes BFS/DFS via frontier strategy. Registry in `index.ts` via `getAlgorithm(name)`. `pathUtils.ts` exports `reconstructPath` and `computeDisplayLists` |
+| `src/components/` | UI components: `Toolbar`, `GridCanvas`, `ControlBar`, `InfoPanel`. `icons.tsx` exports SVG icon components |
 | `src/renderer/` | `canvasRenderer.ts` — `renderFrame(ctx, grid, step, cellSize)` draws one frame |
 | `src/hooks/` | `useGrid(rows, cols)` and `useAnimation(grid)` |
+| `src/pages/` | `HomePage.tsx` — visualizer selection cards. `PathfindingPage.tsx` — the pathfinding visualizer |
+| `src/visualizers/` | `VisualizerInfo` type and `getVisualizers()` — registry of available visualizer pages (currently pathfinding) |
+| `src/maze/` | Maze generators: `recursiveDivision`, `prim`. Shared `mazeUtils.ts` with `ensureSolvable`. Registry in `index.ts` via `getMaze(name)` |
+| `src/constants/` | `colors.ts` — `COLORS` object used by the canvas renderer |
 
 ## Tests
 
@@ -60,7 +67,7 @@ useGrid (grid state + edit mode)     useAnimation (step playback)
 
 ## Algorithms are generators
 
-Every algorithm is a **generator function** `(grid: GridModel) => AlgorithmGenerator`. The `useAnimation` hook calls `run()`, which exhausts the generator eagerly, collecting all `AlgorithmStep[]` into an array. Playback increments `currentStepIndex` via `setInterval`. This means:
+Every algorithm is a **generator function** `(grid: GridModel) => PathfindingAlgorithmGenerator`. The `useAnimation` hook calls `run()`, which exhausts the generator eagerly, collecting all `PathfindingAlgorithmStep[]` into an array. Playback increments `currentStepIndex` via `setInterval`. This means:
 
 - Algorithm code **must not** have side effects — it only yields steps.
 - `useAnimation.run()` **blocks synchronously** while collecting steps; for large grids this may briefly freeze the UI (current default is 25×50 = 1250 cells, which is fine).
@@ -70,7 +77,7 @@ Every algorithm is a **generator function** `(grid: GridModel) => AlgorithmGener
 
 - **Immutable pattern**: grid functions (`setCell`, `setWall`, `setGravel`, `setDefault`, etc.) return a new `GridModel` — always use the returned value.
 - **Cell keys**: algorithms use string keys `"${row},${col}"` for Maps/Sets.
-- **Default grid**: 25 rows × 50 cols, defined as constants in `App.tsx` (not configurable externally).
+- **Default grid**: 25 rows × 50 cols, defined as constants in `PathfindingPage.tsx` (not configurable externally).
 - **Cell size**: 22px, defined in `GridCanvas.tsx` (not derived from container).
 - **Initial start/goal**: placed at `(midRow, cols/4)` and `(midRow, 3*cols/4)` in `createGrid()`.
 - **`start`/`goal` cells cannot become walls or gravel** — `setWall`, `setGravel`, and `setDefault` refuse start and goal positions.
