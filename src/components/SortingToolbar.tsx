@@ -20,6 +20,14 @@ export function SortingToolbar({
 }: SortingToolbarProps) {
   return (
     <div className={styles.toolbar}>
+      <button
+        className={styles.btn}
+        onClick={() => {
+          window.location.hash = '#/';
+        }}
+      >
+        Home
+      </button>
       <div className={styles.section}>
         <label className={styles.label}>Algorithm</label>
         <select
