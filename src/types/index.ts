@@ -54,3 +54,27 @@ export interface SortingAlgorithmInfo {
   fn: SortingAlgorithmFn;
   description: string;
 }
+
+export interface BSTNode {
+  value: number;
+  left: BSTNode | null;
+  right: BSTNode | null;
+}
+
+export type BSTAlgorithmStep = {
+  tree: BSTNode | null;
+  activeNode: number | null;
+  previousNode: number | null;
+  message: string;
+  done: boolean;
+};
+
+export type BSTAlgorithmGenerator = Generator<BSTAlgorithmStep, void, undefined>;
+
+export type BSTAlgorithmFn = (tree: BSTNode | null, value: number) => BSTAlgorithmGenerator;
+
+export interface BSTAlgorithmInfo {
+  name: string;
+  fn: BSTAlgorithmFn;
+  description: string;
+}
