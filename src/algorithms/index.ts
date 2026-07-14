@@ -40,6 +40,6 @@ export function getAlgorithm(name: string): AlgorithmInfo | undefined {
   return algorithms.find((a) => a.name === name);
 }
 
-export function getAlgorithms(): AlgorithmInfo[] {
+export function getAlgorithms(): readonly AlgorithmInfo[] {
   return algorithms;
 }

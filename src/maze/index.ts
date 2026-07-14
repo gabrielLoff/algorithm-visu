@@ -18,6 +18,6 @@ export function getMaze(name: string): MazeInfo | undefined {
   return mazes.find((m) => m.name === name);
 }
 
-export function getMazes(): MazeInfo[] {
+export function getMazes(): readonly MazeInfo[] {
   return mazes;
 }
