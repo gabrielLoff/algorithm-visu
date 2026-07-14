@@ -1,5 +1,6 @@
 import { PathfindingPage } from '../pages/PathfindingPage';
 import { SortingPage } from '../pages/SortingPage';
+import { BSTPage } from '../pages/BSTPage';
 
 export interface VisualizerInfo {
   name: string;
@@ -20,6 +21,12 @@ const visualizers: VisualizerInfo[] = [
     description: 'Watch Bubble, Quick, Merge, and more sort an array step by step.',
     hash: 'sorting',
     component: SortingPage,
+  },
+  {
+    name: 'Binary Search Tree',
+    description: 'Visualize BST operations and traversals — insert, delete, search, and more.',
+    hash: 'bst',
+    component: BSTPage,
   },
 ];
 
