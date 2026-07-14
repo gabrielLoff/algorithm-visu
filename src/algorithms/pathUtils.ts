@@ -16,8 +16,14 @@ export function reconstructPath(
   return path;
 }
 
+/**
+ * Produces display arrays for the current algorithm step.
+ *
+ * `frontier` contains all positions waiting to be explored.
+ * `visited` contains explored positions minus those still in frontier or the current cell.
+ */
 export function computeDisplayLists(
-  exploredKeys: Set<string>,
+  explored: Set<string>,
   frontierKeys: Set<string>,
   currentKey: string | null,
 ): { frontier: CellPosition[]; visited: CellPosition[] } {
@@ -27,7 +33,7 @@ export function computeDisplayLists(
   }
 
   const visited: CellPosition[] = [];
-  for (const key of exploredKeys) {
+  for (const key of explored) {
     if (!frontierKeys.has(key) && key !== currentKey) {
       visited.push(parseCellKey(key));
     }

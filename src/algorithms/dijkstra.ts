@@ -58,8 +58,8 @@ export function* dijkstra(grid: GridModel): AlgorithmGenerator {
       }
     }
 
-    const exploredKeys = new Set(cameFrom.keys());
-    const { frontier, visited } = computeDisplayLists(exploredKeys, frontierSet, currentKey);
+    const explored = new Set(cameFrom.keys());
+    const { frontier, visited } = computeDisplayLists(explored, frontierSet, currentKey);
 
     yield { frontier, visited, current: minNode, path: null, done: false };
   }

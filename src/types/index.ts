@@ -30,6 +30,9 @@ export interface AlgorithmInfo {
   fn: AlgorithmFn;
   description: string;
   weighted: boolean;
+  /** Whether this algorithm guarantees a shortest path for the given grid.
+   *  Most algorithms return a constant (A*, Dijkstra: true; DFS: false).
+   *  Only BFS inspects the grid — it guarantees shortest when there is no gravel. */
   guaranteesShortest: (grid: GridModel) => boolean;
 }
 

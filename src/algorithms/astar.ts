@@ -15,7 +15,7 @@ export function* astar(grid: GridModel): AlgorithmGenerator {
   const fScore = new Map<string, number>();
   const cameFrom = new Map<string, CellPosition>();
   const openSet: AStarNode[] = [];
-  const closed = new Set<string>();
+  const explored = new Set<string>();
 
   const startKey = cellKey(grid.start);
 
@@ -31,8 +31,8 @@ export function* astar(grid: GridModel): AlgorithmGenerator {
     const current = openSet.shift()!;
     const currentKey = cellKey(current.pos);
 
-    if (closed.has(currentKey)) continue;
-    closed.add(currentKey);
+    if (explored.has(currentKey)) continue;
+    explored.add(currentKey);
 
     if (current.pos.row === grid.goal.row && current.pos.col === grid.goal.col) {
       const path = reconstructPath(cameFrom, current.pos);
@@ -53,7 +53,7 @@ export function* astar(grid: GridModel): AlgorithmGenerator {
     }
 
     const frontierKeys = new Set(openSet.map((n) => cellKey(n.pos)));
-    const { frontier, visited } = computeDisplayLists(closed, frontierKeys, currentKey);
+    const { frontier, visited } = computeDisplayLists(explored, frontierKeys, currentKey);
 
     yield { frontier, visited, current: current.pos, path: null, done: false };
   }
