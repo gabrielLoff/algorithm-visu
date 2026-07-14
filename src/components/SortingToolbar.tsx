@@ -1,4 +1,5 @@
 import { getSortingAlgorithms } from '../algorithms/sorting';
+import { navigateHome } from '../visualizers';
 import base from './ToolbarBase.module.css';
 import styles from './SortingToolbar.module.css';
 
@@ -19,13 +20,9 @@ export function SortingToolbar({
   onRandomize,
   isAnimating,
 }: SortingToolbarProps) {
-  const goHome = () => {
-    window.location.hash = '#/';
-  };
-
   return (
     <div className={base.toolbar}>
-      <button className={base.btn} onClick={goHome}>
+      <button className={base.btn} onClick={navigateHome}>
         Home
       </button>
       <div className={base.section}>

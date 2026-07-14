@@ -11,6 +11,27 @@ export function* deleteOp(tree: BSTNode | null, value: number): BSTAlgorithmGene
     return;
   }
 
+  if (root.value === value) {
+    if (!root.left && !root.right) {
+      yield { tree: cloneTree(root), activeNode: root.value, previousNode: null, message: `Removing root leaf node ${value}`, done: false };
+      yield { tree: null, activeNode: null, previousNode: null, message: `Tree is now empty`, done: false };
+      yield { tree: null, activeNode: null, previousNode: null, message: `Done`, done: true };
+      return;
+    }
+    if (!root.left && root.right) {
+      yield { tree: cloneTree(root), activeNode: root.value, previousNode: null, message: `Removing root with right child only`, done: false };
+      yield { tree: cloneTree(root.right), activeNode: root.right.value, previousNode: null, message: `${root.right.value} is now the root`, done: false };
+      yield { tree: cloneTree(root.right), activeNode: null, previousNode: null, message: `Done`, done: true };
+      return;
+    }
+    if (root.left && !root.right) {
+      yield { tree: cloneTree(root), activeNode: root.value, previousNode: null, message: `Removing root with left child only`, done: false };
+      yield { tree: cloneTree(root.left), activeNode: root.left.value, previousNode: null, message: `${root.left.value} is now the root`, done: false };
+      yield { tree: cloneTree(root.left), activeNode: null, previousNode: null, message: `Done`, done: true };
+      return;
+    }
+  }
+
   yield* deleteFromTree(root, value, null);
   yield { tree: cloneTree(root), activeNode: null, previousNode: null, message: `Done`, done: true };
 }
