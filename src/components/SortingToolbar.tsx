@@ -1,4 +1,5 @@
 import { getSortingAlgorithms } from '../algorithms/sorting';
+import base from './ToolbarBase.module.css';
 import styles from './SortingToolbar.module.css';
 
 interface SortingToolbarProps {
@@ -19,19 +20,19 @@ export function SortingToolbar({
   isAnimating,
 }: SortingToolbarProps) {
   return (
-    <div className={styles.toolbar}>
+    <div className={base.toolbar}>
       <button
-        className={styles.btn}
+        className={base.btn}
         onClick={() => {
           window.location.hash = '#/';
         }}
       >
         Home
       </button>
-      <div className={styles.section}>
-        <label className={styles.label}>Algorithm</label>
+      <div className={base.section}>
+        <label className={base.label}>Algorithm</label>
         <select
-          className={styles.select}
+          className={base.select}
           value={selectedAlgorithm}
           onChange={(e) => onAlgorithmChange(e.target.value)}
           disabled={isAnimating}
@@ -44,8 +45,8 @@ export function SortingToolbar({
         </select>
       </div>
 
-      <div className={styles.section}>
-        <label className={styles.label}>Size</label>
+      <div className={base.section}>
+        <label className={base.label}>Size</label>
         <input
           type="range"
           min="10"
@@ -58,8 +59,8 @@ export function SortingToolbar({
         <span className={styles.sizeLabel}>{size}</span>
       </div>
 
-      <div className={styles.section}>
-        <button className={styles.btn} onClick={onRandomize} disabled={isAnimating}>
+      <div className={base.section}>
+        <button className={base.btn} onClick={onRandomize} disabled={isAnimating}>
           Randomize
         </button>
       </div>
