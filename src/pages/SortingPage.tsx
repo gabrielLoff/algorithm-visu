@@ -40,8 +40,8 @@ export function SortingPage() {
     setArray(generateArray(size));
   }, [size]);
 
-  const comparisons = animation.currentStep?.done
-    ? animation.steps.filter((s) => s.swapped !== undefined).length
+  const swapCount = animation.currentStep?.done
+    ? animation.steps.filter((s) => s.swapped !== null).length
     : null;
 
   return (
@@ -70,7 +70,7 @@ export function SortingPage() {
       {algorithmInfo && (
         <div className={styles.footer}>
           {algorithmInfo.description}
-          {comparisons !== null && ` — Steps: ${comparisons}`}
+          {swapCount !== null && ` — Swaps: ${swapCount}`}
         </div>
       )}
     </div>
